@@ -12,82 +12,67 @@ include 'teachers.php';
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="../css/tv.css">
     <style>
-        td span {
-                margin-bottom: 5px; /* Adds some space between badges */
-            }
-        .assignment-group {
-            background-color: #f8f9fa;
-            border-radius: 5px;
-        }
-        .password-toggle {
-            cursor: pointer;
-        }
-        .overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.7);
-            z-index: 1000;
-            overflow-y: auto;
-        }
-        .overlay-content {
-            background-color: white;
-            margin: 5% auto;
-            padding: 20px;
-            width: 80%;
-            max-width: 800px;
-            border-radius: 5px;
-        }
-        .profile-img {
-            max-width: 200px;
-            border-radius: 50%;
-        }
-        .detail-row {
-            padding: 8px 0;
-            border-bottom: 1px solid #eee;
-        }
-        .detail-label {
-            font-weight: bold;
-        }
-        .profile-photo-container {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            overflow: hidden;
-            margin-right: 20px;
-            background-color: #fff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+.container {
+    transition: margin-left var(--transition-speed);
+    margin-left: 4px;
+    width: 100%;
+    min-width: 83vw;
+}
 
-        .profile-photo {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .no-photo {
-            background-color: #e9ecef;
-            color: #6c757d;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 1.2em;
-        }
+@media (min-width: 992px) {
+    .container {
+        margin-left: var(--sidebar-width);
+        width: calc(100% - var(--sidebar-width));
+    }
+}
     </style>
 </head>
 <body>
-<header class="header text-center">
-    <h1>Teacher Management System</h1>
-    <p class="lead mt-2">School Name Secondary School</p>
-</header>
+      <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            <h3><i class="bi bi-mortarboard-fill logo-icon"></i>BGIS SchoolSystem</h3>
+        </div>
 
+        <div class="sidebar-menu">
+            <div class="menu-title">Main Navigation</div>
+            <a href="../home.php" class="menu-item">
+                <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+            
+            <div class="menu-title">Teacher Management</div>
+            <a href="#" class="menu-item " data-bs-toggle="collapse" data-bs-target="#tregisterMenu" aria-expanded="false">
+                <i class="bi bi-person-lines-fill"></i> Register Teacher <i class="bi bi-chevron-down menu-arrow"></i>
+            </a>
+            <div class="collapse show submenu" id="tregisterMenu">
+                <a href="../teacher/teachers_view.php?=success" class="menu-item"><i></i>Register Teacher</a>
+            </div>
+            <a href="#" class="menu-item " data-bs-toggle="collapse" data-bs-target="#tMenu" aria-expanded="true">
+                <i class="bi bi-people-fill"></i> Teacher Records <i class="bi bi-chevron-down menu-arrow"></i>
+            </a>
+            <div class="collapse show submenu" id="tMenu">
+                <a href="grade.php?grade=9" class="menu-item <?= $grade == 9 ? 'active' : '' ?>"><i class=""></i> Grade 9</a>
+                <a href="grade.php?grade=10" class="menu-item <?= $grade == 10 ? 'active' : '' ?>"><i class=""></i> Grade 10</a>
+                <a href="grade.php?grade=11" class="menu-item <?= $grade == 11 ? 'active' : '' ?>"><i class=""></i> Grade 11</a>
+                <a href="grade.php?grade=12" class="menu-item <?= $grade == 12 ? 'active' : '' ?>"><i class=""></i> Grade 12</a>
+            </div>
+        </div>
+
+        <!-- Print Button in Sidebar -->
+        <button class="print-btn no-print" onclick="window.print()">
+            <i class="bi bi-printer-fill"></i> Print Records
+        </button>
+    </div>
+
+    <header class="header text-center">
+        <h1>Teacher Management System</h1>
+        <p class="lead mt-2">School Name Secondary School</p>
+        <button class="menu-toggle no-print" id="menuToggle">
+            <i class="bi bi-list"></i>
+        </button>
+    </header>
 <div class="container">
     <?php if (isset($_SESSION['error'])): ?>
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -111,15 +96,6 @@ include 'teachers.php';
             });
         }, 5000);
     </script>
-
-    <div class="d-flex justify-content-between mb-4 no-print">
-        <a href="../home.php" class="btn btn-back">
-            <i class="bi bi-arrow-left"></i> Go Back Home
-        </a>
-        <button class="btn btn-primary" onclick="window.print()">
-            <i class="bi bi-printer"></i> Print
-        </button>
-    </div>
 
     <div class="form-container">
         <button id="toggleFormBtn" class="btn btn-primary mb-4" data-bs-toggle="collapse" data-bs-target="#teacherForm">
@@ -145,11 +121,11 @@ include 'teachers.php';
                 </div>
 
                 <div class="col-md-6">
-                    <label for="username" class="form-label">Username (min 6 chars)</label>
-                    <input type="text" class="form-control" id="username" name="username" required minlength="6">
-                    <div id="usernameStatus"></div>
-                    <div class="invalid-feedback">Username must be at least 6 characters.</div>
-                </div>
+                        <label for="username" class="form-label">Username (min 6 chars)</label>
+                        <input autocomplete="off" type="text" class="form-control" id="username" name="username" required minlength="6">
+                        <span id="username-result"></span>
+                        <div class="invalid-feedback">Username must be at least 6 characters</div>
+                    </div>
 
                 <div class="col-md-6">
                     <label for="password" class="form-label">Password</label>
@@ -334,7 +310,39 @@ include 'teachers.php';
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="../js/sidebar.js"></script>
+<script src="../js/viewProfile.js"></script>
+
 <script>
+    $(document).ready(function() {
+// Bind the input event to the username field
+$('#username').on('input', function() {
+    var username = $(this).val(); // Get the value of the username
+
+    // Check if username is not empty before sending the request
+    if (username.length > 0) {
+        // Perform AJAX request
+        $.ajax({
+            url: 'teachers.php',  
+            type: 'GET',
+            data: {
+                check_username: true,
+                username: username
+            },
+            success: function(response) {
+                // Update the HTML with the response from PHP
+                $('#username-result').html(response);
+            },
+            error: function() {
+                $('#username-result').html('<span class="text-danger">Error checking username</span>');
+            }
+        });
+    } else {
+        // Clear the result when the input is empty
+        $('#username-result').html('');
+    }
+});
+});
 // Global variables
 let assignmentCounter = 0;
 
@@ -491,94 +499,6 @@ function closeForm() {
     
     new bootstrap.Collapse(document.getElementById('teacherForm')).hide();
 }
-
-function viewProfile(id) {
-    $.when(
-        $.get('teachers.php', { get_teacher: 1, id: id }),
-        $.get('teachers.php', { get_subjects: 1 })
-    ).done(function(teacherResponse, subjectsResponse) {
-        try {
-            const teacher = JSON.parse(teacherResponse[0]);
-            const subjects = JSON.parse(subjectsResponse[0]);
-
-            if (teacher.error) {
-                alert(teacher.error);
-                return;
-            }
-
-
-            // Subject name lookup
-            function getSubjectNameById(id) {
-                const subject = subjects.find(s => s.id == id); // Note the double equals (==) for type-coercion if needed
-                return subject ? subject.name : 'N/A';
-            }
-
-            let assignmentsHtml = '';
-            if (teacher.assignments && teacher.assignments.length > 0) {
-                assignmentsHtml = teacher.assignments.map((assignment, index) => `
-                    <div class="assignment-detail mb-3">
-                        <h6>Assignment ${index + 1}</h6>
-                        <div class="row">
-                            <div class="col-md-3">
-                                <strong>Grade:</strong> ${assignment.grade || 'N/A'}
-                            </div>
-                            <div class="col-md-3">
-                                <strong>Section:</strong> ${assignment.section || 'N/A'}
-                            </div>
-                            <div class="col-md-3">
-                                <strong>Subject:</strong> ${getSubjectNameById(assignment.subject_id)}
-                            </div>
-                        </div>
-                    </div>
-                `).join('');
-            } else {
-                assignmentsHtml = '<p>No assignments found</p>';
-            }
-
-            const profileHtml = `
-                <div class="profile-header text-center">
-                    <img src="${teacher.photo}" class="profile-img mb-3" alt="Teacher Photo">
-                    <h3>${teacher.name}</h3>
-                </div>
-                <div class="profile-details mt-4">
-                    <div class="row detail-row">
-                        <div class="col-md-3 detail-label">Gender:</div>
-                        <div class="col-md-9">${teacher.sex || 'N/A'}</div>
-                    </div>
-                    <div class="row detail-row">
-                        <div class="col-md-3 detail-label">Username:</div>
-                        <div class="col-md-9">${teacher.username || 'N/A'}</div>
-                    </div>
-                    <div class="row detail-row">
-                        <div class="col-md-3 detail-label">Contact:</div>
-                        <div class="col-md-9">${teacher.contact || 'N/A'}</div>
-                    </div>
-                    <div class="row detail-row">
-                        <div class="col-md-12 detail-label">Assignments:</div>
-                        <div class="col-md-12">
-                            ${assignmentsHtml}
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            $('#profileContent').html(profileHtml);
-            $('#profileOverlay').show();
-        } catch (e) {
-            console.error('Error parsing profile data:', e);
-            alert('Error loading teacher profile');
-        }
-    }).fail(function() {
-        alert('Failed to load teacher profile or subjects');
-    });
-}
-
-
-// Close profile view
-function closeProfile() {
-    $('#profileOverlay').hide();
-}
-
 // Confirm delete
 function confirmDelete(id) {
     const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
@@ -606,4 +526,5 @@ function confirmDelete(id) {
 })();
 </script>
 </body>
+
 </html>

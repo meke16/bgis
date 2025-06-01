@@ -21,7 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt = $conn->prepare("INSERT INTO admin (name, sex, contact, username, password) VALUES (?, ?, ?, ?, ?)");
 
         // $options = [
-        //     'cost' => 12
+        //     'cost' => 25
         // ];
         $hashedPwd = password_hash($password, PASSWORD_BCRYPT);
         // echo "hashed pwd:".$password;
@@ -213,9 +213,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <i class="fas fa-user-plus"></i> Register
             </button>
             
-            <div class="text-center mt-3">
+            <!-- <div class="text-center mt-3">
                 <p>Already have an account? <a href="index.php">Login here</a></p>
-            </div>
+            </div> -->
         </form>
     </div>
     

@@ -106,10 +106,187 @@ $num = 0;
     align-items: center;
     font-size: 1.2em;
 }
+/* ========== SIDEBAR STYLES ========== */
+.sidebar {
+    width: var(--sidebar-width);
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    background: linear-gradient(135deg, var(--dark-gray), var(--medium-gray));
+    color: white;
+    z-index: 1000;
+    box-shadow: 2px 0 15px rgba(0, 0, 0, 0.1);
+    transition: all var(--transition-speed);
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-brand {
+    padding: 1.5rem;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 1rem;
+}
+
+.sidebar-brand h3 {
+    font-weight: 700;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.sidebar-brand .logo-icon {
+    color: var(--accent-color);
+    font-size: 1.5rem;
+}
+
+.sidebar-menu {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 1rem;
+}
+
+.menu-title {
+    padding: 0.75rem 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.7);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-top: 1rem;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    border-radius: 6px;
+    margin-bottom: 0.25rem;
+    transition: all 0.2s ease;
+}
+
+.menu-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    text-decoration: none;
+}
+
+.menu-item.active {
+    background: var(--primary-color);
+    color: white;
+    box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+}
+
+.menu-item i {
+    margin-right: 0.75rem;
+    font-size: 1.1rem;
+    width: 24px;
+    text-align: center;
+}
+
+.submenu {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 6px;
+    margin: 0.5rem 0;
+    padding: 0.25rem 0;
+}
+
+.submenu .menu-item {
+    padding-left: 2.5rem;
+    font-size: 0.9rem;
+    position: relative;
+}
+
+.submenu .menu-item::before {
+    content: '';
+    position: absolute;
+    left: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 6px;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+}
+
+.submenu .menu-item:hover::before {
+    background: white;
+}
+
+.menu-arrow {
+    margin-left: auto;
+    transition: transform var(--transition-speed);
+}
+
+.menu-item[aria-expanded="true"] .menu-arrow {
+    transform: rotate(180deg);
+}
+
+/* Print button in sidebar */
+.print-btn {
+    margin: 1.5rem;
+    padding: 0.75rem;
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(72, 149, 239, 0.3);
+}
+
+.print-btn:hover {
+    background: var(--primary-light);
+    transform: translateY(-2px);
+}
    </style>
 </head>
 
 <body>
+    <!-- Sidebar -->
+<div class="sidebar">
+    <div class="sidebar-brand">
+        <h3><i class="bi bi-mortarboard-fill logo-icon"></i>BGIS SchoolSystem</h3>
+    </div>
+
+    <div class="sidebar-menu">
+        <div class="menu-title">Main Navigation</div>
+        <a href="../home.php" class="menu-item">
+            <i class="bi bi-speedometer2"></i> Dashboard
+        </a>
+        
+        <div class="menu-title">Student Management</div>
+        <a href="#" class="menu-item " data-bs-toggle="collapse" data-bs-target="#tregisterMenu" aria-expanded="false">
+            <i class="bi bi-person-lines-fill"></i> Register Teacher <i class="bi bi-chevron-down menu-arrow"></i>
+        </a>
+        <div class="collapse show submenu" id="tregisterMenu">
+            <a href="registerAll.php?=success" class="menu-item"><i></i>Register student</a>
+        </div>
+        <a href="#" class="menu-item " data-bs-toggle="collapse" data-bs-target="#tMenu" aria-expanded="true">
+            <i class="bi bi-people-fill"></i> Teacher Records <i class="bi bi-chevron-down menu-arrow"></i>
+        </a>
+        <div class="collapse show submenu" id="tMenu">
+            <a href="student.php?grade=9" class="menu-item <?= $grade == 9 ? 'active' : '' ?>"><i class=""></i> Grade 9</a>
+            <a href="student.php?grade=10" class="menu-item <?= $grade == 10 ? 'active' : '' ?>"><i class=""></i> Grade 10</a>
+            <a href="student.php?grade=11" class="menu-item <?= $grade == 11 ? 'active' : '' ?>"><i class=""></i> Grade 11</a>
+            <a href="student.php?grade=12" class="menu-item <?= $grade == 12 ? 'active' : '' ?>"><i class=""></i> Grade 12</a>
+        </div>
+    </div>
+
+    <!-- Print Button in Sidebar -->
+    <button class="print-btn no-print" onclick="window.print()">
+        <i class="bi bi-printer-fill"></i> Print Records
+    </button>
+</div>
     <header class="header text-center">
         <h1>Grade <?php echo $grade ?> Student Management System  And Record</h1>
         <p class="lead mt-2">School Name Secondary School</p>
@@ -119,9 +296,6 @@ $num = 0;
         <i class="bi bi-printer-fill"></i>
     </button>
     
-    <a href="../home.php" class="back-home-btn" id="off" title="Go Back Home">
-        <i class="bi bi-house-door" style="font-size: 1.5rem;"></i>
-    </a>
     <a href="../home.php" class="back-home-btn" id="off" title="ADD NEW">
         <i class="bi bi-house-door" style="font-size: 1.5rem;"></i>
     </a>
@@ -207,10 +381,12 @@ $num = 0;
                                         <!-- <button class="btn btn-sm btn-info view-student-btn" data-student-id="<?= $id ?>">
                                             <i class="bi bi-info-circle"></i> Info
                                         </button> -->
-                                        
-                                        <a href="./info.php?id=<?= $id?>" class="btn btn-sm btn-info">
-                                            <i class="bi bi-info-circle"></i>
-                                        </a> 
+                                        <form action="../view/dashboard.php" method="POST" style="display:inline;">
+                                            <input type="hidden" name="viewid" value="<?= $id ?>">
+                                            <button type="submit" class="btn btn-sm btn-info">
+                                                <i class="bi bi-info-circle"></i>
+                                            </button>
+                                    </form>
                                     </div>
                                 </td>
                             </tr>

@@ -4,6 +4,21 @@ include 'session.php';
 
 $self = $_SERVER['PHP_SELF'];
 
+// Handle AJAX username check request
+if (isset($_GET['check_username'])) {
+    $username = mysqli_real_escape_string($conn, $_GET['username']);
+    $sql = "SELECT id FROM teachers WHERE username = '$username'";
+    $result = $conn->query($sql);
+    
+    if ($result->num_rows > 0) {
+        echo "<span class='text-danger'>Username already exists!</span>";
+    } else { 
+        if(strlen($username) >=6 ) {
+        echo "<span class='text-success'>Username available</span>";
+        }
+    }
+    exit();
+}
 // Handle AJAX requests
 if (isset($_GET['get_teacher'])) {
     $id = mysqli_real_escape_string($conn, $_GET['id']);
@@ -61,7 +76,7 @@ if (isset($_POST['submit'])) {
         // Handle file upload
         $photo_path = '';
         if (isset($_FILES['photo']) && $_FILES['photo']['error'] == UPLOAD_ERR_OK) {
-            $target_dir = "../uploads/";
+            $target_dir = "../uploads";
             if (!file_exists($target_dir)) {
                 mkdir($target_dir, 0777, true);
             }

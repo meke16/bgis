@@ -6,264 +6,13 @@
   <title>Student Performance Dashboard</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
-  <style>
-    :root {
-      --primary-color: #4361ee;
-      --secondary-color: #3f37c9;
-      --accent-color: #4cc9f0;
-      --success-color: #4ad66d;
-      --danger-color: #f72585;
-      --light-color: #f8f9fa;
-      --dark-color: #212529;
-      --border-radius: 8px;
-      --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      --transition: all 0.3s ease;
-    }
-
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f5f7fb;
-      color: var(--dark-color);
-      line-height: 1.6;
-    }
-
-    .dashboard-container {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-
-    .header {
-      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-      color: white;
-      padding: 20px;
-      border-radius: var(--border-radius);
-      margin-bottom: 25px;
-      box-shadow: var(--box-shadow);
-    }
-
-    .header h2 {
-      margin: 0;
-      font-weight: 600;
-    }
-
-    .filter-card {
-      background-color: white;
-      border-radius: var(--border-radius);
-      padding: 20px;
-      margin-bottom: 25px;
-      box-shadow: var(--box-shadow);
-    }
-
-    .card {
-      background-color: white;
-      border-radius: var(--border-radius);
-      border: none;
-      box-shadow: var(--box-shadow);
-      transition: var(--transition);
-      margin-bottom: 20px;
-    }
-
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-    }
-
-    .card-header {
-      background-color: var(--primary-color);
-      color: white;
-      border-radius: var(--border-radius) var(--border-radius) 0 0 !important;
-      padding: 15px 20px;
-      font-weight: 600;
-    }
-
-    .nav-pills .nav-link {
-      color: var(--dark-color);
-      font-weight: 500;
-      border-radius: 5px;
-      margin-right: 5px;
-      transition: var(--transition);
-    }
-
-    .nav-pills .nav-link.active {
-      background-color: var(--primary-color);
-      color: white;
-    }
-
-    .table-responsive {
-      border-radius: var(--border-radius);
-      overflow: hidden;
-    }
-
-    .table {
-      margin-bottom: 0;
-    }
-
-    .table th {
-      background-color: var(--primary-color);
-      color: white;
-      font-weight: 500;
-      padding: 12px 15px;
-      vertical-align: middle;
-    }
-
-    .table td {
-      padding: 12px 15px;
-      vertical-align: middle;
-    }
-
-    .table-hover tbody tr:hover {
-      background-color: rgba(67, 97, 238, 0.05);
-    }
-
-    .rank-1 {
-      background-color: rgba(255, 215, 0, 0.2) !important;
-    }
-
-    .rank-2 {
-      background-color: rgba(192, 192, 192, 0.2) !important;
-    }
-
-    .rank-3 {
-      background-color: rgba(205, 127, 50, 0.2) !important;
-    }
-
-    .rank-badge {
-      display: inline-block;
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      text-align: center;
-      line-height: 24px;
-      font-weight: bold;
-      font-size: 12px;
-    }
-
-    .rank-1 .rank-badge {
-      background-color: gold;
-      color: #856404;
-    }
-
-    .rank-2 .rank-badge {
-      background-color: silver;
-      color: #343a40;
-    }
-
-    .rank-3 .rank-badge {
-      background-color: #cd7f32;
-      color: white;
-    }
-
-    .other-rank .rank-badge {
-      background-color: #e9ecef;
-      color: var(--dark-color);
-    }
-
-    .highlight {
-      font-weight: 600;
-      color: var(--primary-color);
-    }
-
-    .btn-primary {
-      background-color: var(--primary-color);
-      border-color: var(--primary-color);
-    }
-
-    .btn-primary:hover {
-      background-color: var(--secondary-color);
-      border-color: var(--secondary-color);
-    }
-
-    .btn-outline-primary {
-      color: var(--primary-color);
-      border-color: var(--primary-color);
-    }
-
-    .btn-outline-primary:hover {
-      background-color: var(--primary-color);
-      border-color: var(--primary-color);
-    }
-
-    .badge-success {
-      background-color: var(--success-color);
-    }
-
-    .badge-danger {
-      background-color: var(--danger-color);
-    }
-
-    .badge-warning {
-      background-color: #ffc107;
-    }
-
-    .progress {
-      height: 8px;
-      border-radius: 4px;
-    }
-
-    .progress-bar {
-      background-color: var(--primary-color);
-    }
-
-    .action-buttons .btn {
-      margin-right: 5px;
-    }
-
-    .subject-score {
-      font-weight: 500;
-    }
-
-    .subject-score.high {
-      color: var(--success-color);
-    }
-
-    .subject-score.medium {
-      color: #ffc107;
-    }
-
-    .subject-score.low {
-      color: var(--danger-color);
-    }
-
-    @media print {
-      .no-print, .action-buttons, .filter-card {
-        display: none !important;
-      }
-
-      body {
-        background: white;
-        padding: 0;
-      }
-
-      .dashboard-container {
-        padding: 0;
-      }
-
-      .header {
-        background: white !important;
-        color: black !important;
-        box-shadow: none !important;
-        padding: 10px 0 !important;
-      }
-
-      .card {
-        box-shadow: none !important;
-        border: 1px solid #ddd !important;
-      }
-
-      .table th {
-        background-color: white !important;
-        color: black !important;
-        border-bottom: 2px solid #ddd !important;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <?php
   include '../connect.php';
-
+  include '../session.php';
   $grade = isset($_GET['grade']) ? (int) $_GET['grade'] : 9;
   $section = isset($_GET['section']) ? mysqli_real_escape_string($conn, $_GET['section']) : 'A';
 ?>
@@ -284,23 +33,23 @@
     <form method="GET" class="row g-3">
       <div class="col-md-3">
         <label for="grade" class="form-label">Grade</label>
-        <select name="grade" id="grade" class="form-select">
+        <select name="grade" id="grade" class="form-select" required onchange="this.form.submit()">
           <?php for ($g = 9; $g <= 12; $g++): ?>
-            <option value="<?= $g ?>" <?= $grade == $g ? 'selected' : '' ?>><?= $g ?></option>
+            <option value="<?= $g ?>" <?= $grade == $g ? 'selected' : 'not student' ?>><?= $g ?></option>
           <?php endfor; ?>
         </select>
       </div>
       <div class="col-md-3">
         <label for="section" class="form-label">Section</label>
-        <select name="section" id="section" class="form-select">
+        <select name="section" id="section" class="form-select" required onchange="this.form.submit()">
           <?php foreach (range('A','Z') as $sec): ?>
-            <option value="<?= $sec ?>" <?= $section == $sec ? 'selected' : '' ?>><?= $sec ?></option>
+            <option value="<?= $sec ?>" <?= $section == $sec ? 'selected' : 'not student' ?>><?= $sec ?></option>
           <?php endforeach; ?>
         </select>
       </div>
-      <div class="col-md-3 d-flex align-items-end">
+      <!-- <div class="col-md-3 d-flex align-items-end">
         <button type="submit" class="btn btn-primary"><i class="fas fa-filter me-1"></i> Filter</button>
-      </div>
+      </div> -->
     </form>
   </div>
 
@@ -349,7 +98,7 @@
           FROM student_marks sm
           JOIN students s ON sm.student_id = s.id
           WHERE s.grade = $grade AND s.section = '$section'
-          GROUP BY sm.student_id, sm.subject_id, sm.semester_id
+          GROUP BY sm.student_id, sm.subject_id, sm.semester_id 
         ");
 
         foreach ($marks_res as $row) {
@@ -478,7 +227,7 @@ foreach ($students as $student) {
                 <tbody>
                   <?php foreach ($students as $student): ?>
                     <?php 
-                      $rank_class = '';
+                      $rank_class = ''; 
                       $term_rank = $student['term_ranks'][$term_id] ?? null;
                       if ($term_rank == 1) $rank_class = 'rank-1';
                       elseif ($term_rank == 2) $rank_class = 'rank-2';
@@ -505,7 +254,7 @@ foreach ($students as $student) {
                             <?=  $student['term_ranks'][$term_id] ?>
                           </span>
                         <?php else: ?>
-                          -
+                          <h1>no student</h1>
                         <?php endif; ?>
                       </td>
                     </tr>
