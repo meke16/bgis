@@ -1,17 +1,5 @@
 <?php
-// Database connection
-$host = 'localhost';
-$dbname = 'project1';
-$username = 'root';
-$password = '';
-
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die("Database connection failed: " . $e->getMessage());
-}
-
+include 'config.php';
 // Handle form submission for adding a new semesters
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'add') {
     $name = $_POST['name'];
@@ -22,6 +10,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     if (!empty($name) && !empty($start_date) && !empty($end_date)) {
         $stmt = $pdo->prepare("INSERT INTO semesters (name, start_date, end_date, is_current) VALUES (?, ?, ?, ?)");
         $success = $stmt->execute([$name, $start_date, $end_date, $is_current]);
+        header("location: sem.php?msg=added");
+        exit();
     }
 }
 
@@ -43,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     if (!empty($name) && !empty($start_date) && !empty($end_date)) {
         $stmt = $pdo->prepare("UPDATE semesters SET name = ?, start_date = ?, end_date = ?, is_current = ? WHERE id = ?");
         $stmt->execute([$name, $start_date, $end_date, $is_current, $id]);
-        header("Location: sem.php");
+        header("Location: sem.php?msg=updated");
         exit;
     }
 }
@@ -51,10 +41,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 // Handle deletion of a semesters
 if (isset($_GET['delete'])) {
     $id = $_GET['delete'];
-    $stmt = $pdo->prepare("DELETE FROM semesters WHERE id = ?");
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM student_marks WHERE semester_id = ?");
     $stmt->execute([$id]);
-    header("Location: sem.php");
+    $count = $stmt->fetchColumn();
+    if($count > 0) {
+        header("Location: sem.php?msg=linked");
+        exit();
+    } else {
+    $stmt = $pdo->prepare("DELETE FROM semesters WHERE id = ?");
+    header("Location: sem.php?msg=deleted");
     exit;
+    }
 }
 
 // Fetch all semesterss
@@ -70,8 +67,21 @@ $semesterss = $pdo->query("SELECT * FROM semesters ORDER BY id ASC")->fetchAll(P
 </head>
 <body>
 <div class="container mt-5">
-    <h2 class="mb-4">School semesters Management</h2>
 
+    <!-- Alert Message -->
+    <?php if (isset($_GET['msg'])): ?>
+        <?php if ($_GET['msg'] == 'linked'): ?>
+            <div class="alert alert-danger text-center"> Cannot delete this Semester. It is linked to student marks.</div>
+        <?php elseif ($_GET['msg'] == 'deleted'): ?>
+            <div class="alert alert-success text-center">Semester deleted successfully.</div>
+        <?php elseif($_GET['msg'] === 'added'): ?>
+            <div class="alert alert-success text-center">Semester added successfully.</div>
+        <?php elseif($_GET['msg'] === 'updated'): ?>
+            <div class="alert alert-success text-center">Semester updated successfully.</div>
+        <?php endif; ?>
+    <?php endif; ?>
+
+    <h2 class="mb-4">School semesters Management</h2>
     <!-- Add or Edit semesters Form -->
     <div class="card mb-4">
         <div class="card-header"><?= isset($semesters) ? 'Edit' : 'Add' ?> semesters</div>
@@ -97,13 +107,8 @@ $semesterss = $pdo->query("SELECT * FROM semesters ORDER BY id ASC")->fetchAll(P
                     <label for="is_current" class="form-label">Is Active</label>
                     <input type="checkbox" id="is_current" name="is_current" <?= isset($semesters) && $semesters['is_current'] ? 'checked' : '' ?>>
                 </div>
-                <button class="btn btn-primary text-bold"><a class="text-light" href="../home.php">Back Home</a></button>
+                <a style="position: absolute; right: 10px;" class="btn btn-primary text-bold" href="../home.php">Back Home</a>
                 <button type="submit" class="btn btn-success"><?= isset($semesters) ? 'Update semesters' : 'Add semesters' ?></button>
-                <?php if (isset($success) && $success): ?>
-                    <div class="alert alert-success mt-3">semesters added/updated successfully!</div>
-                <?php elseif (isset($success) && !$success): ?>
-                    <div class="alert alert-danger mt-3">Failed to add/update semesters.</div>
-                <?php endif; ?>
             </form>
         </div>
     </div>
@@ -125,9 +130,10 @@ $semesterss = $pdo->query("SELECT * FROM semesters ORDER BY id ASC")->fetchAll(P
                         </tr>
                     </thead>
                     <tbody>
+                        <?php $num=1; ?>
                         <?php foreach ($semesterss as $semesters): ?>
                             <tr>
-                                <td><?= htmlspecialchars($semesters['id']) ?></td>
+                                <td><?= $num++; ?></td>
                                 <td><?= htmlspecialchars($semesters['name']) ?></td>
                                 <td><?= htmlspecialchars($semesters['start_date']) ?></td>
                                 <td><?= htmlspecialchars($semesters['end_date']) ?></td>
@@ -146,5 +152,6 @@ $semesterss = $pdo->query("SELECT * FROM semesters ORDER BY id ASC")->fetchAll(P
         </div>
     </div>
 </div>
+<script src="script.js"></script>
 </body>
 </html>

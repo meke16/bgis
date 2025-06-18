@@ -1,3 +1,10 @@
+
+<?php
+  include '../connect.php';
+  include '../session.php';
+  $grade = isset($_GET['grade']) ? (int) $_GET['grade'] : 9;
+  $section = isset($_GET['section']) ? mysqli_real_escape_string($conn, $_GET['section']) : 'A';
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,16 +14,16 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <link rel="stylesheet" href="style.css">
+  <style>
+    @media (max-width: 992px) {
+      .card,.card-body {
+        padding-right: 85px;
+        min-width: 100vw;
+      }
+    }
+  </style>
 </head>
 <body>
-
-<?php
-  include '../connect.php';
-  include '../session.php';
-  $grade = isset($_GET['grade']) ? (int) $_GET['grade'] : 9;
-  $section = isset($_GET['section']) ? mysqli_real_escape_string($conn, $_GET['section']) : 'A';
-?>
-
 <div class="dashboard-container">
   <div class="header">
     <div class="d-flex justify-content-between align-items-center">
@@ -253,8 +260,6 @@ foreach ($students as $student) {
                           <span class="<?= $rank_class ? 'rank-badge' : 'other-rank' ?>">
                             <?=  $student['term_ranks'][$term_id] ?>
                           </span>
-                        <?php else: ?>
-                          <h1>no student</h1>
                         <?php endif; ?>
                       </td>
                     </tr>

@@ -1,7 +1,6 @@
 <?php
 include '../connect.php';
 include 'register.php';
-session_start();
 
 // Search functionality
 $searchQuery = '';
@@ -24,102 +23,59 @@ $num = 0;
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="style.css?v=1.1">
+    <link rel="stylesheet" href="style.css?v=10">
+    <link rel="stylesheet" href="sidebar.css?v=10">
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Custom CSS -->
-   <style>
-         /* Add to your style.css */
-.modal-view .no-print-modal {
-    display: none !important;
-}
-
-/* Hide certain elements in modal view */
-.modal-view .student-profile {
-    padding: 0;
-    margin-bottom: 0;
-    background: none;
-    box-shadow: none;
-}
-
-.modal-view .container {
-    padding: 0;
-    max-width: 100%;
-}
-
-/* Overlay styles */
-.overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
-}
-
-.overlay.active {
-    opacity: 1;
-    visibility: visible;
-}
-
-.overlay-content {
-    background-color: white;
-    padding: 2rem;
-    border-radius: 8px;
-    max-width: 500px;
-    width: 90%;
-    text-align: center;
-}  
-.profile-photo-container {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    overflow: hidden;
-    margin-right: 20px;
-    background-color: #fff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.profile-photo {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.no-photo {
-    background-color: #e9ecef;
-    color: #6c757d;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 1.2em;
-}
-   </style>
+    <style>
+       
+    </style>
 </head>
 
 <body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            <h3><i class="bi bi-mortarboard-fill logo-icon"></i>BGIS SchoolSystem</h3>
+        </div>
+
+        <div class="sidebar-menu">
+            <div class="menu-title">Main Navigation</div>
+            <a href="../home.php" class="menu-item">
+                <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+
+            <div class="menu-title">Student Management</div>
+            <a href="#" class="menu-item " aria-expanded="false">
+                <i class="bi bi-person-lines-fill"></i> Register Students 
+            </a>
+            <div class="collapse show submenu">
+                <a href="registerAll.php?=0" class="menu-item <?= $grade == 0 ? 'active' : '' ?>">Register student</a>
+            </div>
+            <a href="#" class="menu-item " aria-expanded="true">
+                <i class="bi bi-people-fill"></i> Student Records 
+            </a>
+            <div class="collapse show submenu" >
+                <a href="student.php?grade=9" class="menu-item <?= $grade == 9 ? 'active' : '' ?>"> Grade 9</a>
+                <a href="student.php?grade=10" class="menu-item <?= $grade == 10 ? 'active' : '' ?>"> Grade 10</a>
+                <a href="student.php?grade=11" class="menu-item <?= $grade == 11 ? 'active' : '' ?>"> Grade 11</a>
+                <a href="student.php?grade=12" class="menu-item <?= $grade == 12 ? 'active' : '' ?>"> Grade 12</a>
+            </div>
+        </div>
+        <hr>
+        <!-- Print Button in Sidebar -->
+        <button class="print-btn no-print" onclick="window.print()">
+            <i class="bi bi-printer-fill"></i> Print Records
+        </button>
+    </div>
     <header class="header text-center">
         <h1> Student Management System</h1>
         <p class="lead mt-2">School Name Secondary School</p>
+        <button class="menu-toggle no-print" id="menuToggle">
+            <i class="bi bi-list"></i>
+        </button>
     </header>
-    
-    <button id="off" class="print btn btn-primary" onclick="reloadAndPrint('tt1')" title="Print">
-        <i class="bi bi-printer-fill"></i>
-    </button>
-    
-    <a href="../home.php" class="back-home-btn" id="off" title="Go Back Home">
-        <i class="bi bi-house-door" style="font-size: 1.5rem;"></i>
-    </a>
-
     <div class="container">
         <div id="off" class="form-container animated">
             <button id="toggleFormBtn" class="btn btn-primary mb-4">
@@ -145,18 +101,18 @@ $num = 0;
                     <div class="col-md-6">
                         <label for="sex" class="form-label">Grade</label>
                         <select class="form-select" id="grade" name="grade" required>
-                        <option value="">Select Grade</option>
-                        <?php for($i=9; $i<=12; $i++): ?>
-                            <option value="<?= $i ?>">Grade <?= $i ?></option>
-                        <?php endfor; ?>
+                            <option value="">Select Grade</option>
+                            <?php for ($i = 9; $i <= 12; $i++): ?>
+                                <option value="<?= $i ?>">Grade <?= $i ?></option>
+                            <?php endfor; ?>
                         </select>
                         <div class="invalid-feedback">Please select a gender.</div>
                     </div>
                     <div class="col-md-6">
                         <label for="section" class="form-label">Section</label>
                         <select class="form-select" name="section" id="section" required>
-                                <option value="">Select Section</option>
-                            <?php foreach(range('A', 'Z') as $letter): ?>
+                            <option value="">Select Section</option>
+                            <?php foreach (range('A', 'Z') as $letter): ?>
                                 <option value="<?= $letter ?>"><?= $letter ?></option>
                             <?php endforeach; ?>
                         </select>
@@ -200,8 +156,8 @@ $num = 0;
             <form id="form2" method="POST" class="row g-3">
                 <div class="col-md-12">
                     <div class="input-group">
-                        <input type="search" class="form-control" placeholder="Search students..." 
-                               name="search_query" value="<?php echo htmlspecialchars($searchQuery); ?>">
+                        <input type="search" class="form-control" placeholder="Search students..."
+                            name="search_query" value="<?php echo htmlspecialchars($searchQuery); ?>" required>
                         <button type="submit" class="btn btn-primary" name="search">
                             <i class="bi bi-search"></i> Search
                         </button>
@@ -238,7 +194,7 @@ $num = 0;
                             $phone = $row['phone'];
                             $photo = $row['photo'];
                             $num++;
-                                ?>
+                    ?>
                             <tr>
                                 <td class="num"><?= htmlspecialchars($num) ?></td>
                                 <td class="uu"><?= htmlspecialchars($name) ?></td>
@@ -257,7 +213,7 @@ $num = 0;
                                 </td>
                                 <td id="off" class="text-center">
                                     <div class="btn-group" role="group">
-                                        <a href="update.php?updateid=<?= $id?>" class="btn btn-sm btn-primary">
+                                        <a href="update.php?updateid=<?= $id ?>" class="btn btn-sm btn-primary">
                                             <i class="bi bi-pencil"></i>
                                         </a>
                                         <button class="btn btn-sm btn-danger" onclick="showOverlay(<?= $id ?>)">
@@ -266,19 +222,21 @@ $num = 0;
                                         <!-- <button class="btn btn-sm btn-info view-student-btn" data-student-id="<?= $id ?>">
                                             <i class="bi bi-info-circle"></i> Info
                                         </button> -->
-                                    <form action="../view/dashboard.php" method="POST" style="display:inline;">
-                                        <input type="hidden" name="viewid" value="<?= $id ?>">
-                                        <button type="submit" class="btn btn-sm btn-info">
-                                            <i class="bi bi-info-circle"></i>
-                                        </button>
-                                    </form>
+                                        <form action="../view/dashboard.php" method="POST" style="display:inline;">
+                                            <input type="hidden" name="viewid" value="<?= $id ?>">
+                                            <button type="submit" class="btn btn-sm btn-info">
+                                                <i class="bi bi-info-circle"></i>
+                                            </button>
+                                        </form>
                                     </div>
                                 </td>
                             </tr>
-                            <?php endwhile; ?>
-                            <?php else: ?>
-                                <tr><td colspan="9" class="text-center">No students registered yet</td></tr>
-                    <?php endif; ?>  
+                        <?php endwhile; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="9" class="text-center">No students registered yet</td>
+                        </tr>
+                    <?php endif; ?>
                 </tbody>
             </table>
         </div>
@@ -299,119 +257,121 @@ $num = 0;
             </div>
         </div>
     </div>
-<!-- Student Info Modal -->
-<div class="modal fade" id="studentInfoModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Student Information</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body" id="studentInfoContent">
-                Loading student information...
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" onclick="printModalContent()">
-                    <i class="bi bi-printer"></i> Print
-                </button>
+    <!-- Student Info Modal -->
+    <div class="modal fade" id="studentInfoModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Student Information</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="studentInfoContent">
+                    Loading student information...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="printModalContent()">
+                        <i class="bi bi-printer"></i> Print
+                    </button>
+                </div>
             </div>
         </div>
     </div>
-</div>
     <!-- Bootstrap JS Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="main.js"></script>
+    <script src="../js/sidebar.js"></script>
     <script>
-    // Add this to your existing script section
-    $(document).ready(function() {
-    // Handle view student button click
-    $('.view-student-btn').click(function() {
-        const studentId = $(this).data('student-id');
-        const modal = new bootstrap.Modal(document.getElementById('studentInfoModal'));
-        
-        // Load student info
-        $('#studentInfoContent').load('../view/index.php?admin_view=1&student_id=' + studentId, function() {
-            modal.show();
-        });
-    });
-});
+        // Add this to your existing script section
+        $(document).ready(function() {
+            // Handle view student button click
+            $('.view-student-btn').click(function() {
+                const studentId = $(this).data('student-id');
+                const modal = new bootstrap.Modal(document.getElementById('studentInfoModal'));
 
-function printModalContent() {
-    const printContent = document.getElementById('studentInfoContent').innerHTML;
-    const originalContent = document.body.innerHTML;
-    
-    document.body.innerHTML = printContent;
-    window.print();
-    document.body.innerHTML = originalContent;
-    
-    // Re-initialize any necessary scripts
-    window.location.reload();
-}
+                // Load student info
+                $('#studentInfoContent').load('../view/index.php?admin_view=1&student_id=' + studentId, function() {
+                    modal.show();
+                });
+            });
+        });
+
+        function printModalContent() {
+            const printContent = document.getElementById('studentInfoContent').innerHTML;
+            const originalContent = document.body.innerHTML;
+
+            document.body.innerHTML = printContent;
+            window.print();
+            document.body.innerHTML = originalContent;
+
+            // Re-initialize any necessary scripts
+            window.location.reload();
+        }
     </script>
     <script>
-    $(document).ready(function() {
-    // Bind the input event to the username field
-    $('#username').on('input', function() {
-        var username = $(this).val(); // Get the value of the username
+        $(document).ready(function() {
+            // Bind the input event to the username field
+            $('#username').on('input', function() {
+                var username = $(this).val(); // Get the value of the username
 
-        // Check if username is not empty before sending the request
-        if (username.length > 0) {
-            // Perform AJAX request
-            $.ajax({
-                url: 'registerAll.php',  
-                type: 'GET',
-                data: {
-                    check_username: true,
-                    username: username
-                },
-                success: function(response) {
-                    // Update the HTML with the response from PHP
-                    $('#username-result').html(response);
-                },
-                error: function() {
-                    $('#username-result').html('<span class="text-danger">Error checking username</span>');
+                // Check if username is not empty before sending the request
+                if (username.length > 0) {
+                    // Perform AJAX request
+                    $.ajax({
+                        url: 'registerAll.php',
+                        type: 'GET',
+                        data: {
+                            check_username: true,
+                            username: username
+                        },
+                        success: function(response) {
+                            // Update the HTML with the response from PHP
+                            $('#username-result').html(response);
+                        },
+                        error: function() {
+                            $('#username-result').html('<span class="text-danger">Error checking username</span>');
+                        }
+                    });
+                } else {
+                    // Clear the result when the input is empty
+                    $('#username-result').html('');
                 }
             });
-        } else {
-            // Clear the result when the input is empty
-            $('#username-result').html('');
-        }
-    });
-});
-    // Overlay functions
+        });
+        // Overlay functions
         let currentItemId = null;
-        
+
         function showOverlay(id) {
             currentItemId = id;
             document.getElementById('overlay').classList.add('active');
         }
-        
+
         function closeOverlay() {
             document.getElementById('overlay').classList.remove('active');
         }
-        
+
         // Function to handle the delete action
-            function deleteItem() {
-                if (currentItemId !== null) {
-                    // Send the delete request using AJAX
-                    const xhr = new XMLHttpRequest();
-                    xhr.open("GET", "delete.php?deleteid=" + currentItemId, true);
-                    xhr.onload = function() {
-                        if (xhr.status == 200) {
-                            // Successfully deleted, hide the overlay and reload the page
-                            closeOverlay();
-                            //alert("Item deleted successfully!");
-                            location.reload(); // Optionally reload the page to reflect changes
-                        } else {
-                            alert("Error deleting item.");
-                        }
-                    };
-                    xhr.send();
-                } else {
-                    alert("No item selected for deletion.");
-                }
+        function deleteItem() {
+            if (currentItemId !== null) {
+                // Send the delete request using AJAX
+                const xhr = new XMLHttpRequest();
+                xhr.open("GET", "delete.php?deleteid=" + currentItemId, true);
+                xhr.onload = function() {
+                    if (xhr.status == 200) {
+                        // Successfully deleted, hide the overlay and reload the page
+                        closeOverlay();
+                        //alert("Item deleted successfully!");
+                        location.reload(); // Optionally reload the page to reflect changes
+                    } else {
+                        alert("Error deleting item.");
+                    }
+                };
+                xhr.send();
+            } else {
+                alert("No item selected for deletion.");
             }
-        </script>
+        }
+    </script>
 </body>
+
 </html>

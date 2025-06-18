@@ -1,17 +1,5 @@
 <?php
-// Database connection
-$host = 'localhost';
-$dbname = 'project1';
-$username = 'root';
-$password = '';
-
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die("Database connection failed: " . $e->getMessage());
-}
-
+include 'config.php';
 // Handle form submission for adding a new subject
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'add') {
     $name = $_POST['name'];
@@ -20,6 +8,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     if (!empty($name) && !empty($description)) {
         $stmt = $pdo->prepare("INSERT INTO subjects (name, description) VALUES (?, ?)");
         $success = $stmt->execute([$name, $description]);
+        header("location: add.php?msg=added");
+        exit();
     }
 }
 
@@ -39,18 +29,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     if (!empty($name) && !empty($description)) {
         $stmt = $pdo->prepare("UPDATE subjects SET name = ?, description = ? WHERE id = ?");
         $stmt->execute([$name, $description, $id]);
-        header("Location: add.php");
-        exit;
+        header("Location: add.php?msg=updated");
+        exit();
     }
 }
 
 // Handle deletion of a subject
 if (isset($_GET['delete'])) {
     $id = $_GET['delete'];
-    $stmt = $pdo->prepare("DELETE FROM subjects WHERE id = ?");
+    // Check if subject is used
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM student_marks WHERE subject_id = ?");
     $stmt->execute([$id]);
-    header("Location: add.php");
-    exit;
+    $count = $stmt->fetchColumn();
+
+    if ($count > 0) {
+        header("Location: add.php?msg=linked");
+        exit();
+    } else {
+        // Safe to delete
+        $stmt = $pdo->prepare("DELETE FROM subjects WHERE id = ?");
+        $stmt->execute([$id]);
+        header("Location: add.php?msg=deleted");
+        exit();
+    }
 }
 
 // Fetch all subjects
@@ -66,8 +67,20 @@ $subjects = $pdo->query("SELECT * FROM subjects ORDER BY id ASC")->fetchAll(PDO:
 </head>
 <body>
 <div class="container mt-5">
-    <h2 class="mb-4">School Subject Management</h2>
+<!-- Alert Message -->
+<?php if (isset($_GET['msg'])): ?>
+    <?php if ($_GET['msg'] == 'linked'): ?>
+        <div class="alert alert-danger text-center"> Cannot delete this subject. It is linked to student marks.</div>
+    <?php elseif ($_GET['msg'] == 'deleted'): ?>
+        <div class="alert alert-success text-center">Subject deleted successfully.</div>
+    <?php elseif($_GET['msg'] === 'added'): ?>
+        <div class="alert alert-success text-center">Subject added successfully.</div>
+    <?php elseif($_GET['msg'] === 'updated'): ?>
+        <div class="alert alert-success text-center">Subject updated successfully.</div>
+    <?php endif; ?>
+<?php endif; ?>
 
+    <h2 class="mb-4">School Subject Management</h2>
     <!-- Add or Edit Subject Form -->
     <div class="card mb-4">
         <div class="card-header"><?= isset($subject) ? 'Edit' : 'Add' ?> Subject</div>
@@ -85,13 +98,8 @@ $subjects = $pdo->query("SELECT * FROM subjects ORDER BY id ASC")->fetchAll(PDO:
                     <label for="description" class="form-label">Subject Description</label>
                     <textarea class="form-control" id="description" name="description" rows="3" required><?= isset($subject) ? htmlspecialchars($subject['description']) : '' ?></textarea>
                 </div>
-                <button class="btn btn-primary text-bold"><a class="text-light" href="../home.php">back-home</a></button>
-                <button type="submit" class="btn btn-success"><?= isset($subject) ? 'Update Subject' : 'Add Subject' ?></button>
-                <?php if (isset($success) && $success): ?>
-                    <div class="alert alert-success mt-3">Subject added/updated successfully!</div>
-                <?php elseif (isset($success) && !$success): ?>
-                    <div class="alert alert-danger mt-3">Failed to add/update subject.</div>
-                <?php endif; ?>
+                <a style="position: absolute; right: 10px;" class="btn btn-primary" href="../home.php">back-home</a>
+                <button type="submit" class="btn btn-success" ><?= isset($subject) ? 'Update Subject' : 'Add Subject' ?></button>
             </form>
         </div>
     </div>
@@ -104,16 +112,17 @@ $subjects = $pdo->query("SELECT * FROM subjects ORDER BY id ASC")->fetchAll(PDO:
                 <table class="table table-bordered">
                     <thead>
                         <tr>
-                            <th>ID</th>
+                            <th>List</th>
                             <th>Name</th>
                             <th>Description</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
+                        <?php $num = 1; ?>
                         <?php foreach ($subjects as $subject): ?>
                             <tr>
-                                <td><?= htmlspecialchars($subject['id']) ?></td>
+                                <td><?= $num++; ?></td>
                                 <td><?= htmlspecialchars($subject['name']) ?></td>
                                 <td><?= htmlspecialchars($subject['description']) ?></td>
                                 <td>
@@ -130,5 +139,6 @@ $subjects = $pdo->query("SELECT * FROM subjects ORDER BY id ASC")->fetchAll(PDO:
         </div>
     </div>
 </div>
+<script src="script.js"></script>
 </body>
 </html>

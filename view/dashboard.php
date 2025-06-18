@@ -192,7 +192,7 @@ $activeTab = isset($_GET['tab']) ? $_GET['tab'] : 'summary';
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="detail.php">
-                        <i class="bi bi-speedometer2"></i> tttt
+                        <i class="bi bi-speedometer2"></i> Report Card
                     </a>
                 </li>
                 <li class="nav-item">
@@ -349,7 +349,7 @@ $activeTab = isset($_GET['tab']) ? $_GET['tab'] : 'summary';
                                 <table class="table">
                                     <thead>
                                         <tr>
-                                            <th>Academic Year</th>
+                                            <!-- <th>Academic Year</th> -->
                                             <th>Semester</th>
                                             <th>Subject</th>
                                             <th>Assessment Type</th>
@@ -359,7 +359,7 @@ $activeTab = isset($_GET['tab']) ? $_GET['tab'] : 'summary';
                                     <tbody>
                                         <?php foreach ($marks as $mark): ?>
                                             <tr>
-                                                <td><?php echo htmlspecialchars(date('Y', strtotime($mark['semester_start_date']))); ?></td>
+                                                <!-- <td><?php echo htmlspecialchars(date('Y', strtotime($mark['semester_start_date']))); ?></td> -->
                                                 <td><?php echo htmlspecialchars($mark['semester_name']); ?></td>
                                                 <td><?php echo htmlspecialchars($mark['subject_name']); ?></td>
                                                 <td><?php echo htmlspecialchars($mark['mark_type']); ?></td>

@@ -226,7 +226,7 @@ if (isset($_GET['assignment'])) {
         }
         
         .mark-input {
-            max-width: 100px;
+            width: 100px;
             transition: all 0.2s;
         }
         
@@ -270,7 +270,7 @@ if (isset($_GET['assignment'])) {
         
         @media (max-width: 768px) {
             .mark-input {
-                max-width: 70px;
+                width: 100px;
             }
             
             .card-body {
@@ -289,7 +289,7 @@ if (isset($_GET['assignment'])) {
             }
             
             .mark-input {
-                max-width: 60px;
+                width: 100px;
                 padding: 0.25rem 0.5rem;
                 font-size: 0.85rem;
             }
@@ -453,7 +453,7 @@ if (isset($_GET['assignment'])) {
                                                                         step="0.01"
                                                                         value="<?= $student['mark'] !== null ? $student['mark'] : '' ?>"
                                                                         placeholder="Enter mark">
-                                                                    <span class="input-group-text">%</span>
+                                                                    <!-- <span class="input-group-text">%</span> -->
                                                                 </div>
                                                             </td>
                                                         </tr>

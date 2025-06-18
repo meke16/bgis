@@ -131,6 +131,7 @@ $photo = $teacher['photo'] ?? 'default-profile.jpg';
         .profile-container {
             max-width: 800px;
             margin: 2rem auto;
+            margin-top: 150px;
             padding: 2rem;
             background-color: var(--bs-card-bg);
             border-radius: 0.5rem;
@@ -150,13 +151,14 @@ $photo = $teacher['photo'] ?? 'default-profile.jpg';
             width: 150px;
             height: 150px;
             margin: 0 auto 1rem;
+            margin-left: 0;
         }
 
         .profile-img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            border-radius: 50%;
+            border-radius: 10%;
             border: 4px solid var(--bs-card-bg);
             box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.1);
         }
@@ -181,15 +183,15 @@ $photo = $teacher['photo'] ?? 'default-profile.jpg';
             padding-bottom: 0.5rem;
         }
 
-        .section-title:after {
+        /* .section-title:after {
             content: '';
             position: absolute;
             left: 0;
             bottom: 0;
-            width: 50px;
+            width: 120px;
             height: 3px;
             background-color: var(--primary);
-        }
+        } */
 
         .btn-upload {
             background-color: var(--primary);
@@ -250,6 +252,7 @@ $photo = $teacher['photo'] ?? 'default-profile.jpg';
             .profile-container {
                 padding: 1rem;
                 margin: 1rem;
+                margin-top: 150px;
             }
             
             .profile-img-container {
@@ -257,9 +260,9 @@ $photo = $teacher['photo'] ?? 'default-profile.jpg';
                 height: 120px;
             }
         }
-        #form1,#form2 {
+        /* #form1,#form2 {
             display: none;
-        }
+        } */
     </style>
 </head>
 <body>
@@ -283,16 +286,16 @@ $photo = $teacher['photo'] ?? 'default-profile.jpg';
             <h2>Profile Management</h2>
             <p class="text-muted">Update your profile photo and password</p>
         </div>
-        <a href="td.php" class="btn btn-outline-secondary mb-3">
+        <!-- <a href="td.php" class="btn btn-outline-secondary mb-3">
             <i class="fas fa-arrow-left me-1"></i> 
-        </a>
+        </a> -->
 
         <div class="row">
             <div class="col-md-6" >
                 <h3 class="section-title">Profile Photo</h3>
-                <button class="btn btn-primary" onclick="show1()">
+                <!-- <button class="btn btn-primary" onclick="show1()">
                     update photo
-                </button>
+                </button> -->
                 <div id="form2">
                 <div class="profile-img-container">
                     <?php if (!empty($photo) && file_exists($photo)): ?>
@@ -311,7 +314,7 @@ $photo = $teacher['photo'] ?? 'default-profile.jpg';
                         <div class="form-text">JPG, PNG or GIF (Max 10MB)</div>
                     </div>
                     
-                    <div class="d-flex gap-2">
+                    <div class="d-flex gap-3">
                         <button type="submit" name="upload_photo" class="btn btn-upload btn-sm">
                             <i class="fas fa-upload me-1"></i> Upload
                         </button>
@@ -336,9 +339,9 @@ $photo = $teacher['photo'] ?? 'default-profile.jpg';
                 <?php if ($success): ?>
                     <div class="alert alert-success"><?php echo $success; ?></div>
                 <?php endif; ?>
-                    <button id="btn-show" class="btn btn-info" onclick="show();">
+                    <!-- <button id="btn-show" class="btn btn-info" onclick="show();">
                         click here
-                    </button>
+                    </button> -->
                 <form method="POST" id="form1" >
                     <div class="mb-3 password-input-group">
                         <label for="current_password" class="form-label">Current Password</label>
@@ -356,15 +359,15 @@ $photo = $teacher['photo'] ?? 'default-profile.jpg';
                         <i class="fas fa-eye password-toggle mt-3" onclick="togglePassword('confirm_password')"></i>
                     </div>
                     <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-primary mt-2">
                             <i class="fas fa-key me-1"></i> Change Password
                         </button>
-                        <a href="td.php" class="btn btn-outline-secondary">
-                            <i class="fas fa-arrow-left me-1"></i> Back to Dashboard
-                        </a>
                     </div>
                 </form>
             </div>
+             <a href="td.php" class="btn btn-outline-secondary mt-4 w-100">
+                    <i class="fas fa-arrow-left me-1"></i> Back to Dashboard
+             </a>
         </div>
     </div>
 

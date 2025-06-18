@@ -9,6 +9,7 @@ if (!extension_loaded('pdo')) {
 class MarksReport {
     private $pdo;
     private $markRanges = [
+        '30-65' => ['min' => 30, 'max' => 65],
         '65-70' => ['min' => 65, 'max' => 70],
         '70-75' => ['min' => 70, 'max' => 75],
         '75-80' => ['min' => 75, 'max' => 80],

@@ -472,7 +472,6 @@ $activeSemester = isset($_GET['semester']) ? $_GET['semester'] : (count($semeste
                     <div class="semester-tab <?php echo $semester['id'] == $activeSemester ? 'active' : ''; ?>" 
                          onclick="window.location.href='?semester=<?php echo $semester['id']; ?>'">
                         <?php echo htmlspecialchars($semester['name']); ?> 
-                        (<?php echo date('Y', strtotime($semester['start_date'])); ?>)
                     </div>
                 <?php endforeach; ?>
             </div>
@@ -567,7 +566,7 @@ $activeSemester = isset($_GET['semester']) ? $_GET['semester'] : (count($semeste
                 </div>
             <?php else: ?>
                 <div class="alert alert-info">No marks data available for the selected semester.</div>
-            <!-- <?php endif; ?> -->
+             <?php endif; ?> 
         </div>
     </div>
 

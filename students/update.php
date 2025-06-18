@@ -1,4 +1,6 @@
 <?php
+session_start();
+include 'session.php';
 include '../connect.php';
 $id = $_GET['updateid'];
 

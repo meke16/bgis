@@ -225,6 +225,13 @@ if(isset($admin_info)) {
                 max-width: 500px;
             }
         }
+         @media (min-width: 1200px) {
+            .login-container {
+                max-width: 1000px;
+                width: 100%;
+                max-height: 90vhlo;
+            }
+        }
     </style>
 </head>
 <body>

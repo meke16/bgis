@@ -1,6 +1,7 @@
 <?php
+session_start();
+include 'session.php';
 include '../connect.php';
-//include("session.php");
 
 // Handle AJAX username check request
 if (isset($_GET['check_username'])) {

@@ -169,9 +169,9 @@ if ($selectedSemester && $selectedGrade && $selectedSubject && is_numeric($minMa
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         .dashboard-header {
-            background-color: #343a40;
+            background-color:rgb(51, 59, 66);
             color: white;
-            padding: 20px 0;
+            padding: 20px 10px;
             margin-bottom: 30px;
             border-radius: 5px;
         }
@@ -307,7 +307,7 @@ if ($selectedSemester && $selectedGrade && $selectedSubject && is_numeric($minMa
                         </div>
                     </div>
                     <div class="col-md-4 d-flex align-items-end">
-                        <button type="submit" class="btn btn-primary w-100">
+                        <button type="submit" class="btn btn-primary w-100 mb-3">
                             <i class="fas fa-search"></i> Find Students
                         </button>
                     </div>

@@ -1,4 +1,5 @@
 <?php
+session_start();
 include '../connect.php';
 include 'session.php';
 
@@ -76,7 +77,7 @@ if (isset($_POST['submit'])) {
         // Handle file upload
         $photo_path = '';
         if (isset($_FILES['photo']) && $_FILES['photo']['error'] == UPLOAD_ERR_OK) {
-            $target_dir = "../uploads";
+            $target_dir = "../uploads/";
             if (!file_exists($target_dir)) {
                 mkdir($target_dir, 0777, true);
             }
@@ -230,4 +231,31 @@ $sql = "SELECT t.*,
 
 $result = $conn->query($sql);
 $num = 0;
+
+$cuurent_url = $_SERVER['REQUEST_URI'];
+if($cuurent_url === '/bgis/teacher/teachers.php') {
+        echo '
+        <div style="
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 20vh;
+            background-color: #fff3f3;
+            color: #d8000c;
+            font-family: Arial, sans-serif;
+            font-size: 24px;
+            font-weight: bold;
+            border: 2px solid #d8000c;
+            border-radius: 8px;
+            max-width: 300px;
+            margin: 0 auto;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(216,0,12,0.5);
+        ">
+            working well
+            <br>
+            protected Room
+        </div>
+    ';
+}
 ?>

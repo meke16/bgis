@@ -1,9 +1,8 @@
 <?php
-// Start session and check authenticatio
 session_start();
 include 'connect.php';
-// include("session.php");
-
+include("session.php");
+include("auth_check.php");
 // Get admin username securely
 $stmt = $conn->prepare("SELECT username FROM admin WHERE id = ?");
 $stmt->bind_param("i", $_SESSION['user_id']);
@@ -54,16 +53,27 @@ $current_year = date('Y') . '-' . (date('Y') + 1);
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/dashboard.css">
+     <!-- <style type="text/css">
+        @import url("css/dashboard.css");
+    </style> -->
     <style>
-
+        .hh {
+            font-size: 22px;
+            color: rgb(242, 246, 238);
+        }
+        .sidebar-brand {
+            position: sticky;
+            top: 0;
+        }
     </style>
+
 </head>
 
 <body>
     <!-- Sidebar Navigation -->
     <div class="sidebar">
         <div class="sidebar-brand">
-            <h3><i class="bi bi-mortarboard-fill logo-icon"></i>BGIS SchoolSystem</h3>
+            <h3 class="hh"><i class="bi bi-mortarboard-fill logo-icon"></i>BGIS SchoolSystem</h3>
         </div>
 
         <div class="sidebar-menu">
@@ -133,8 +143,8 @@ $current_year = date('Y') . '-' . (date('Y') + 1);
                 <i class="bi bi-bar-chart-line-fill"></i> Analytical Summary <i class="bi bi-chevron-down menu-arrow"></i>
             </a>
             <div class="collapse hide submenu" id="maMenu">
-                <a href="analytical/analytic.php" class="menu-item"><i class="bi bi-square"></i>List</a>
-                <a href="analytical/analytics.php" class="menu-item"><i class="bi bi-square"></i>Graphical</a>
+                <a href="analytical/analytic.php" class="menu-item">List</a>
+                <a href="analytical/analytics.php" class="menu-item">Graphical</a>
             </div>
 
             <div class="menu-title">Account</div>
@@ -169,11 +179,11 @@ $current_year = date('Y') . '-' . (date('Y') + 1);
 
         <!-- Top Navigation Bar -->
         <nav class="navbar navbar-expand-lg navbar-light navbar-custom mb-4">
-            <div class="container-fluid">
-                <button class="menu-toggle" id="sidebarToggle">
+            <!-- <div class="container-fluid"> -->
+                <button class="menu-toggle" id="sidebarToggle" onclick="call">
                     <i class="bi bi-list"></i>
                 </button>
-                <div  class="d-flex align-items-center ms-auto ">
+                <div class="d-flex align-items-center ms-auto ">
                     <div class="user-info me-3">
                         <?php $name = $conn->query('SELECT name from admin')->fetch_row()[0]; ?>
                         <?php $sex = $conn->query('SELECT sex from admin')->fetch_row()[0]; ?>
@@ -181,11 +191,11 @@ $current_year = date('Y') . '-' . (date('Y') + 1);
                         <span class="name"><?php echo ($sex=="Male" ? "Mr." : "Mrs.").htmlspecialchars($name); ?></span>
                         <span id="date-time" class="date"><?= date('Y/M/D') ?> </span><span  class="time" id="current-time"></span>
                     </div>
-                    <!-- <a href="logout.php" class="logout-btn">
+                    <a href="logout.php" class="logout-btn">
                         <i class="bi bi-box-arrow-right"></i> <span class="d-none d-md-inline">Logout</span>
-                    </a> -->
+                    </a>
                 </div>
-            </div>
+            <!-- </div> -->
         </nav>
 
         <!-- Dashboard Content -->
@@ -205,7 +215,7 @@ $current_year = date('Y') . '-' . (date('Y') + 1);
                             $gradeName = "Grade-$grade";
                         ?>
                             <div class="col-md-3 col-sm-6 mb-4">
-                                <h5 class="text-center mb-3"><?php echo $gradeName; ?></h5>
+                                <h4 class="text-center mb-3"><?php echo $gradeName; ?></h4>
                                 <hr style="border:solid grey">
                                 <div class="chart-container">
                                     <canvas id="<?php echo $grade; ?>Chart"></canvas>
@@ -227,21 +237,6 @@ $current_year = date('Y') . '-' . (date('Y') + 1);
 
             <!-- Quick Stats Row -->
             <div class="row g-4 mb-6">
-                <div class="col-md-4">
-                    <div class="stat-card bg-primary">
-                        <i class="bi bi-people-fill stat-icon"></i>
-                        <p class="stat-title">Total Students</p>
-                        <h3 class="stat-value">
-                            <?php
-                            $total = 0;
-                            foreach ($grades as $grade) {
-                                $total += $counts[$grade]['total'];
-                            }
-                            echo $total;
-                            ?>
-                        </h3>
-                    </div>
-                </div>
                 <div class="col-md-4">
                     <div class="stat-card bg-success">
                         <i class="bi bi-gender-male stat-icon"></i>
@@ -268,6 +263,21 @@ $current_year = date('Y') . '-' . (date('Y') + 1);
                                 $femaleTotal += $counts[$grade]['female'];
                             }
                             echo $femaleTotal;
+                            ?>
+                        </h3>
+                    </div>
+                </div>
+                                <div class="col-md-4">
+                    <div class="stat-card bg-primary">
+                        <i class="bi bi-people-fill stat-icon"></i>
+                        <p class="stat-title">Total Students</p>
+                        <h3 class="stat-value">
+                            <?php
+                            $total = 0;
+                            foreach ($grades as $grade) {
+                                $total += $counts[$grade]['total'];
+                            }
+                            echo $total;
                             ?>
                         </h3>
                     </div>
