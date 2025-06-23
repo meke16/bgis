@@ -1,6 +1,5 @@
 
 <?php 
-session_start();
 // Set session expiration time (in seconds)
 $session_timeout = 900; // 30 minutes
 

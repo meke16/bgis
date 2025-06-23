@@ -199,6 +199,9 @@ $subjectStats = $report->getSubjectStatisticsByGender($selectedSemester, $select
             <div class="card-header bg-primary text-white">
                 <h5 class="card-title">Filter Options</h5>
             </div>
+            <a class="btn btn-success mt-3" href='../home.php'>go back home</a>
+            <a class="btn btn-dark mt-2" href="analytic.php">show list</a>
+
             <div class="card-body">
                 <form method="POST" id="filterForm">
                     <div class="row">

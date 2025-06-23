@@ -32,9 +32,9 @@ if (isset($_POST['submit'])) {
                 $target_file = $target_dir . $filename;
                 
                 // Check if image file is actual image
-                $check = getimagesize($_FILES['photo']['tmp_name']);
+                $check = getimagesize(filename: $_FILES['photo']['tmp_name']);
                 if ($check !== false) {
-                    if (move_uploaded_file($_FILES['photo']['tmp_name'], $target_file)) {
+                    if (move_uploaded_file(from: $_FILES['photo']['tmp_name'], to: $target_file)) {
                         $photo_path = $target_file;
                     }
                 }

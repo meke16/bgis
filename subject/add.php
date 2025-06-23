@@ -85,7 +85,7 @@ $subjects = $pdo->query("SELECT * FROM subjects ORDER BY id ASC")->fetchAll(PDO:
     <div class="card mb-4">
         <div class="card-header"><?= isset($subject) ? 'Edit' : 'Add' ?> Subject</div>
         <div class="card-body">
-            <form method="POST">
+            <form method="POST" autocomplete="off">
                 <input type="hidden" name="action" value="<?= isset($subject) ? 'edit' : 'add' ?>">
                 <?php if (isset($subject)): ?>
                     <input type="hidden" name="id" value="<?= $subject['id'] ?>">

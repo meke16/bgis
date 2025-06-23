@@ -1,10 +1,10 @@
 <?php
 session_start();
-include 'config.php'; 
+include 'config.php';
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = $_POST['username'];
     $password = $_POST['password'];
-    
+
     try {
         $stmt = $pdo->prepare("SELECT * FROM students WHERE username = :username");
         $stmt->execute([':username' => $username]);
@@ -15,15 +15,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             header('Location: dashboard.php');
             exit();
         } else {
-            echo '<div class="error">Invalid username or password</div>';
+            header('Location: index.php?msg=error');
+            exit();
         }
     } catch (PDOException $e) {
-        echo '<div class="error">Login error: ' . $e->getMessage() . '</div>';
+        header('Location: index.php?loginerror');
+        exit();
     }
 }
- ?>
- <!DOCTYPE html>
+?>
+<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -131,7 +134,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         .form-floating {
-            margin-bottom: 1.75rem;
+            margin-bottom: 1.95rem;
         }
 
         .form-floating label {
@@ -144,7 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         .form-control {
-            border-radius: 8px;
+            border-radius: 10px;
             padding: 16px 12px;
             border: 1px solid var(--border-color);
             transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease, color 0.3s ease;
@@ -178,42 +181,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         .btn-login:hover {
             background-color: var(--secondary-color);
         }
-
-        .divider {
-            position: relative;
-            margin: 2.5rem 0;
-            text-align: center;
-            color: #6c757d;
-            transition: var(--text-transition);
-        }
-
-        [data-bs-theme="dark"] .divider {
-            color: #adb5bd;
-        }
-
-        .divider::before {
-            content: "";
-            position: absolute;
-            top: 50%;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background-color: var(--border-color);
-            z-index: 1;
-        }
-
-        .divider span {
-            position: relative;
-            z-index: 2;
-            background-color: white;
-            padding: 0 15px;
-            transition: background-color 0.3s ease;
-        }
-
-        [data-bs-theme="dark"] .divider span {
-            background-color: var(--card-bg);
-        }
-
         .footer-links {
             text-align: center;
             margin-top: 25px;
@@ -244,8 +211,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         .password-toggle {
             cursor: pointer;
             background-color: transparent;
-            border-left: none;
             color: var(--text-color);
+            position: absolute;
+            right: 10px;
+            bottom: 16px;
+            font-size: 20px;
         }
 
         .password-toggle:hover {
@@ -275,10 +245,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         [data-bs-theme="dark"] .theme-toggle {
-            color: #f8f9fa;
+            color: rgb(57, 139, 220);
         }
     </style>
 </head>
+
 <body data-bs-theme="light">
     <button class="theme-toggle" id="themeToggle">
         <i class="fas fa-moon"></i>
@@ -286,22 +257,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <div class="login-container">
         <div class="logo">
             <img src="../logo/bg.jpg" alt="School Logo">
-                <h2>Admin Login</h2>
+            <h2>Student Login</h2>
             <p class="text-muted">Enter your credentials to access your account</p>
         </div>
-        <?php if (isset($_GET['error'])): ?>
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <i class="fas fa-exclamation-circle me-2"></i>Invalid username or password
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
+        <!-- Alert Message -->
+        <?php if (isset($_GET['msg'])): ?>
+            <?php if ($_GET['msg'] == 'error'): ?>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-circle me-2"></i>Invalid username or password
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            <?php elseif ($_GET['msg'] == 'loginerror'): ?>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-circle me-2"></i>Login Error
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div> <?php elseif ($_GET['msg'] === 'logout'): ?>
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle me-2"></i>You have been logged out successfully
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div> <?php endif; ?>
         <?php endif; ?>
 
-        <?php if (isset($_GET['logout'])): ?>
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <i class="fas fa-check-circle me-2"></i>You have been logged out successfully
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        <?php endif; ?>
 
         <form action="index.php" method="POST" autocomplete="off">
             <div class="form-floating mb-3">
@@ -310,35 +286,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <input type="text" class="form-control with-icon" id="username" name="username" placeholder="Username" required>
                 </div>
             </div>
-            <div class="form-floating" >
-                <div class="input-group mb-3" >
+            <div class="form-floating">
+                <div class="input-group mb-3">
                     <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                    <input  type="password" class="form-control with-icon" id="password" name="password" placeholder="Password" required>
-                    <span class="input-group-text password-toggle" onclick="togglePassword()">
-                            <i class="fas fa-eye" id="toggleIcon"></i>
-                        </span>
+                    <input type="password" class="form-control with-icon" id="password" name="password" placeholder="Password" required> 
                 </div>
+                <span class="password-toggle" onclick="togglePassword()">
+                        <i class="fas fa-eye" id="toggleIcon"></i>
+                    </span>
             </div>
             <div class="d-grid gap-2">
                 <button type="submit" class="btn btn-primary btn-login">
                     <i class="fas fa-sign-in-alt me-2"></i>Login
                 </button>
             </div>
-<!-- 
-            <div class="form-check mt-3">
-                <input class="form-check-input" type="checkbox" id="rememberMe" name="rememberMe">
-                <label class="form-check-label" for="rememberMe">Remember me</label>
-            </div> -->
-        </form>
-<!-- 
-        <div class="divider">
-            <span>OR</span>
-        </div>
-
-        <div class="footer-links">
-            <a href="#"><i class="fas fa-question-circle me-1"></i>Forgot password?</a> ·
-            <a href="#"><i class="fas fa-envelope me-1"></i>Contact support</a>
-        </div> -->
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -366,7 +327,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 bsAlert.close();
             });
         }, 5000);
+    // auto remove for alert Message 
+        setTimeout(() => {
+            const alertBox = document.querySelector('.alert');
+            if (alertBox) alertBox.remove();
 
+            // Remove `?msg=...` from URL
+            const url = new URL(window.location);
+            url.searchParams.delete('msg');
+            window.history.replaceState({}, document.title, url.pathname);
+        }, 3000);
         // Dark Mode Toggle
         const themeToggle = document.getElementById('themeToggle');
         const body = document.body;
@@ -387,4 +357,5 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         });
     </script>
 </body>
+
 </html>

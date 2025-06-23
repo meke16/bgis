@@ -26,9 +26,14 @@ foreach ($grades as $grade) {
         'total' => $maleCount + $femaleCount
     ];
 }
-
-$current_year = date('Y') . '-' . (date('Y') + 1);
-
+$result = $conn->query("SELECT * from admin"); 
+if ($result && $result->num_rows > 0) {
+    $row=$result->fetch_assoc();
+    $id=[$row['id']];
+    $name = $row['name'];
+    $sex = $row['sex'];
+    $photo = $row['photo'];
+}    
 ?>
 
 <!DOCTYPE html>
@@ -53,7 +58,7 @@ $current_year = date('Y') . '-' . (date('Y') + 1);
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/dashboard.css">
-     <!-- <style type="text/css">
+    <!-- <style type="text/css">
         @import url("css/dashboard.css");
     </style> -->
     <style>
@@ -61,9 +66,16 @@ $current_year = date('Y') . '-' . (date('Y') + 1);
             font-size: 22px;
             color: rgb(242, 246, 238);
         }
-        .sidebar-brand {
-            position: sticky;
-            top: 0;
+
+        .user-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin-right: 10px;
+            object-fit: cover;
+            border: 2px solid var(--light-color);
+            position: absolute;
+            top: 35px;
         }
     </style>
 
@@ -161,42 +173,40 @@ $current_year = date('Y') . '-' . (date('Y') + 1);
                 <span class="toggle-thumb"></span>
             </div>
         </div>
-           
+
         <!-- Flash Messages -->
-        <?php if (isset($_SESSION['flash_message'])): ?>
+        <?php if (isset($_SESSION['msg'])): ?>
             <div class="toast-container">
-                <div class="toast show align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast show align-items-end text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
                     <div class="d-flex">
                         <div class="toast-body">
-                            <?php echo $_SESSION['flash_message']; ?>
+                            <?php echo $_SESSION['msg']; ?>
                         </div>
                         <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
                     </div>
                 </div>
             </div>
-            <?php unset($_SESSION['flash_message']); ?>
+            <?php unset($_SESSION['msg']); ?>
         <?php endif; ?>
 
         <!-- Top Navigation Bar -->
         <nav class="navbar navbar-expand-lg navbar-light navbar-custom mb-4">
-            <!-- <div class="container-fluid"> -->
+            <div class="container-fluid">
                 <button class="menu-toggle" id="sidebarToggle" onclick="call">
                     <i class="bi bi-list"></i>
                 </button>
                 <div class="d-flex align-items-center ms-auto ">
                     <div class="user-info me-3">
-                        <?php $name = $conn->query('SELECT name from admin')->fetch_row()[0]; ?>
-                        <?php $sex = $conn->query('SELECT sex from admin')->fetch_row()[0]; ?>
-                        <!-- <img src="https://ui-avatars.com/api/?name=<?php echo "AD"; ?>&background=<?php echo (substr(md5($name), 0, 6)); ?>&color=fff" alt="<?php echo $name ?>" class="user-avatar"> -->
-                        <span class="name"><?php echo ($sex=="Male" ? "Mr." : "Mrs.").htmlspecialchars($name); ?></span>
-                        <span id="date-time" class="date"><?= date('Y/M/D') ?> </span><span  class="time" id="current-time"></span>
+                        <span class="name"><?php echo ($sex == "Male" ? "Mr." : "Mrs.") . htmlspecialchars($name); ?></span>
+                        <span id="date-time" class="date"><?= date('Y/M/D') ?> </span><span class="time" id="current-time"></span>
                     </div>
                     <a href="logout.php" class="logout-btn">
                         <i class="bi bi-box-arrow-right"></i> <span class="d-none d-md-inline">Logout</span>
                     </a>
                 </div>
-            <!-- </div> -->
+            </div>
         </nav>
+        <!-- <img src="<?= $photo; ?>" class="user-avatar"> -->
 
         <!-- Dashboard Content -->
         <div class="container-fluid animate-fade-in">
@@ -223,9 +233,9 @@ $current_year = date('Y') . '-' . (date('Y') + 1);
                                 <hr>
                                 <div class="text-center mt-3">
                                     <!-- <div class="d-flex justify-content-center mb-1"> -->
-                                        <span class="badge bg-primary">Male: <?php echo $counts[$grade]['male']; ?></span>
-                                        <span class="badge bg-danger">Female: <?php echo $counts[$grade]['female']; ?></span>
-                                        <span class="badge bg-dark">Total: <?php echo $counts[$grade]['total']; ?></span>
+                                    <span class="badge bg-primary">Male: <?php echo $counts[$grade]['male']; ?></span>
+                                    <span class="badge bg-danger">Female: <?php echo $counts[$grade]['female']; ?></span>
+                                    <span class="badge bg-dark">Total: <?php echo $counts[$grade]['total']; ?></span>
                                     <!-- </div> -->
                                 </div>
                                 <hr>
@@ -267,7 +277,7 @@ $current_year = date('Y') . '-' . (date('Y') + 1);
                         </h3>
                     </div>
                 </div>
-                                <div class="col-md-4">
+                <div class="col-md-4">
                     <div class="stat-card bg-primary">
                         <i class="bi bi-people-fill stat-icon"></i>
                         <p class="stat-title">Total Students</p>
@@ -292,21 +302,21 @@ $current_year = date('Y') . '-' . (date('Y') + 1);
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="js/dashboard.js"></script>
-<script>
+    <script>
         function updateTime() {
             const now = new Date();
             const time = now.toLocaleTimeString('en-GB'); // 24-hour format
             const timeElement = document.getElementById('current-time');
-                    timeElement.textContent = time;
-        
-        // Apply direct styles
-        timeElement.style.color = '#2ecc71';
-        timeElement.style.fontWeight = 'bold';
-        timeElement.style.marginLeft = '9px';         
-       }
+            timeElement.textContent = time;
 
-            updateTime(); // initial call
-            setInterval(updateTime, 1000); // update every second
+            // Apply direct styles
+            timeElement.style.color = '#2ecc71';
+            timeElement.style.fontWeight = 'bold';
+            timeElement.style.marginLeft = '9px';
+        }
+
+        updateTime(); // initial call
+        setInterval(updateTime, 1000); // update every second
         // Initialize charts
         document.addEventListener('DOMContentLoaded', function() {
             const counts = <?php echo json_encode($counts); ?>;
@@ -317,8 +327,7 @@ $current_year = date('Y') . '-' . (date('Y') + 1);
                 '12': ['#e67e22', '#34495e']
             };
 
-            <?php foreach ($grades as $grade): ?>
-                {
+            <?php foreach ($grades as $grade): ?> {
                     const ctx = document.getElementById('<?php echo "$grade"; ?>Chart').getContext('2d');
                     const maleCount = counts['<?php echo $grade; ?>']['male'];
                     const femaleCount = counts['<?php echo $grade; ?>']['female'];
@@ -326,7 +335,7 @@ $current_year = date('Y') . '-' . (date('Y') + 1);
                     const colors = gradeColors['<?php echo $grade; ?>'];
 
                     new Chart(ctx, {
-                        type: 'doughnut',
+                        type: 'bar',
                         data: {
                             labels: ['Male', 'Female'],
                             datasets: [{
@@ -361,4 +370,5 @@ $current_year = date('Y') . '-' . (date('Y') + 1);
         });
     </script>
 </body>
+
 </html>

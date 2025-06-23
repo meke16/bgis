@@ -157,8 +157,8 @@ $num = 0;
                 <div class="col-md-12">
                     <div class="input-group">
                         <input type="search" class="form-control" placeholder="Search students..."
-                            name="search_query" value="<?php echo htmlspecialchars($searchQuery); ?>" required>
-                        <button type="submit" class="btn btn-primary" name="search">
+                            name="search_query" value="<?php echo htmlspecialchars($searchQuery); ?>">
+                        <button class="btn btn-primary" name="search">
                             <i class="bi bi-search"></i> Search
                         </button>
                     </div>
@@ -222,12 +222,9 @@ $num = 0;
                                         <!-- <button class="btn btn-sm btn-info view-student-btn" data-student-id="<?= $id ?>">
                                             <i class="bi bi-info-circle"></i> Info
                                         </button> -->
-                                        <form action="../view/dashboard.php" method="POST" style="display:inline;">
-                                            <input type="hidden" name="viewid" value="<?= $id ?>">
-                                            <button type="submit" class="btn btn-sm btn-info">
-                                                <i class="bi bi-info-circle"></i>
-                                            </button>
-                                        </form>
+                                        <!-- <a href="../view/dashboard.php" class="btn btn-sm btn-info">
+                                            <i class="bi bi-info-circle"></i>
+                                        </a> -->
                                     </div>
                                 </td>
                             </tr>
@@ -257,57 +254,10 @@ $num = 0;
             </div>
         </div>
     </div>
-    <!-- Student Info Modal -->
-    <div class="modal fade" id="studentInfoModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Student Information</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body" id="studentInfoContent">
-                    Loading student information...
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" onclick="printModalContent()">
-                        <i class="bi bi-printer"></i> Print
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
     <!-- Bootstrap JS Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="main.js"></script>
     <script src="../js/sidebar.js"></script>
-    <script>
-        // Add this to your existing script section
-        $(document).ready(function() {
-            // Handle view student button click
-            $('.view-student-btn').click(function() {
-                const studentId = $(this).data('student-id');
-                const modal = new bootstrap.Modal(document.getElementById('studentInfoModal'));
-
-                // Load student info
-                $('#studentInfoContent').load('../view/index.php?admin_view=1&student_id=' + studentId, function() {
-                    modal.show();
-                });
-            });
-        });
-
-        function printModalContent() {
-            const printContent = document.getElementById('studentInfoContent').innerHTML;
-            const originalContent = document.body.innerHTML;
-
-            document.body.innerHTML = printContent;
-            window.print();
-            document.body.innerHTML = originalContent;
-
-            // Re-initialize any necessary scripts
-            window.location.reload();
-        }
-    </script>
     <script>
         $(document).ready(function() {
             // Bind the input event to the username field

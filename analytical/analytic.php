@@ -172,8 +172,10 @@ if ($selectedSemester && $selectedGrade && $selectedSubject && is_numeric($minMa
             background-color:rgb(51, 59, 66);
             color: white;
             padding: 20px 10px;
+            margin-top: 20px;
             margin-bottom: 30px;
             border-radius: 5px;
+            box-shadow: 0 14px 10px rgba(61, 170, 25, 0.1);
         }
         .card {
             margin-bottom: 20px;
@@ -223,6 +225,9 @@ if ($selectedSemester && $selectedGrade && $selectedSubject && is_numeric($minMa
         .badge-fail {
             background-color: #dc3545;
         }
+        .back {
+            color: #28a745;
+        }
     </style>
 </head>
 <body>
@@ -230,6 +235,8 @@ if ($selectedSemester && $selectedGrade && $selectedSubject && is_numeric($minMa
         <div class="dashboard-header text-center">
             <h1><i class="fas fa-chart-line"></i> Student Marks Analytics Dashboard</h1>
             <p class="lead">Find students by custom mark ranges and view performance</p>
+            <a class="btn btn-success" href='../home.php'>go back home</a>
+            <a class="btn btn-dark " href="analytics.php">show graphically</a>
         </div>
 
         <?php if (isset($error)): ?>

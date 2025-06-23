@@ -1,10 +1,11 @@
 <?php
 session_start();
+include 'session.php';
 require_once '../connect.php';
 
 // Check authentication and role
 if (!isset($_SESSION['user']['authenticated']) || $_SESSION['user']['role'] !== 'teacher') {
-    header("Location: ../index.php");
+    header("Location: index.php");
     exit();
 }
 
@@ -377,26 +378,53 @@ if (isset($_GET['assignment'])) {
                                     <?php if ($mark_type && $semester_id): ?>
                                         <span class="badge bg-light text-dark">
                                             <?= htmlspecialchars($mark_type) ?> - 
-                                            Semester <?= $semester_id ?>
+                                            <?php $semesters = $conn->query("SELECT * FROM semesters"); 
+                                            while($sem = $semesters->fetch_assoc()) {
+                                                if($sem['id'] == $semester_id) {
+                                                    echo $sem['name'];
+                                                }
+                                            }
+                                            ?>
                                         </span>
                                     <?php endif; ?>
                                 </div>
                                 <div class="card-body">
+                                    <?php
+                                    $teacher_id = $_SESSION['user']['id'];
+                                    $mark_type = $_GET['type'] ?? '';
+                                    $semester_id = $_GET['semester'] ?? '';
+
+                                    // Fetch teacher's mark types
+                                    $mark_types_result = mysqli_query($conn, "SELECT * FROM mark_types WHERE teacher_id = $teacher_id");
+                                    ?>
+
                                     <form method="GET" class="mb-4">
                                         <input type="hidden" name="assignment" value="<?= $selected_class['assignment_id'] ?>">
                                         <div class="row g-3">
+
+                                            <!-- Mark Type -->
                                             <div class="col-md-5">
                                                 <label class="form-label">Mark Type</label>
                                                 <select name="type" class="form-select" required onchange="this.form.submit()">
                                                     <option value="">Select Mark Type</option>
-                                                    <option value="Midterm Exam" <?= $mark_type == 'Midterm Exam' ? 'selected' : '' ?>>Midterm Exam</option>
-                                                    <option value="Final Exam" <?= $mark_type == 'Final Exam' ? 'selected' : '' ?>>Final Exam</option>
-                                                    <option value="Quiz" <?= $mark_type == 'Quiz' ? 'selected' : '' ?>>Quiz</option>
-                                                    <option value="Assignment" <?= $mark_type == 'Assignment' ? 'selected' : '' ?>>Assignment</option>
-                                                    <option value="Project" <?= $mark_type == 'Project' ? 'selected' : '' ?>>Project</option>
-                                                    <option value="Other" <?= $mark_type == 'Other' ? 'selected' : '' ?>>Other</option>
+                                                    <?php while ($row = mysqli_fetch_assoc($mark_types_result)): ?>
+                                                        <option value="<?= htmlspecialchars($row['type_name']) ?>" <?= $mark_type == $row['type_name'] ? 'selected' : '' ?>>
+                                                            <?= htmlspecialchars($row['type_name']) ?> (Max: <?= $row['max_mark'] ?>)
+                                                        </option>
+                                                    <?php endwhile; ?>
+                                                    <option disabled>────────────</option>
+                                                    <option  value="add_new" <?= $mark_type === 'add_new' ? 'selected' : '' ?>>+ Add New Mark Type</option>
                                                 </select>
+
+                                                <!-- Link if "add_new" is selected -->
+                                                <?php if ($mark_type === 'add_new'): ?>
+                                                    <div class="mt-2">
+                                                        <a href="mark_type.php" class="btn btn-sm btn-outline-primary">Go Add New Mark Type</a>
+                                                    </div>
+                                                <?php endif; ?>
                                             </div>
+
+                                            <!-- Semester -->
                                             <div class="col-md-5">
                                                 <label class="form-label">Semester</label>
                                                 <select name="semester" class="form-select" required onchange="this.form.submit()">
@@ -410,16 +438,18 @@ if (isset($_GET['assignment'])) {
                                                     ?>
                                                 </select>
                                             </div>
+
+                                            <!-- Refresh Button -->
                                             <div class="col-md-2 d-flex align-items-end">
                                                 <?php if ($mark_type && $semester_id): ?>
-                                                    <button type="button" class="btn btn-outline-info w-100" data-bs-toggle="tooltip" title="Refresh view" onclick="window.location.reload()">
+                                                    <button type="button" class="btn btn-outline-info w-100" title="Refresh view" onclick="window.location.reload()">
                                                         <i class="bi bi-arrow-clockwise"></i>
                                                     </button>
                                                 <?php endif; ?>
                                             </div>
+
                                         </div>
                                     </form>
-                                    
                                     <?php if ($mark_type && $semester_id): ?>
                                         <form method="POST" id="marksForm">
                                             <input type="hidden" name="assignment_id" value="<?= $selected_class['assignment_id'] ?>">
@@ -430,9 +460,9 @@ if (isset($_GET['assignment'])) {
                                                 <table class="table table-striped table-hover align-middle">
                                                     <thead class="table-light">
                                                         <tr>
-                                                            <th width="5%">#</th>
-                                                            <th width="65%">Student Name</th>
-                                                            <th width="30%">Mark (0-100)</th>
+                                                            <th width="2%">#</th>
+                                                            <th width="35%">Student Name</th>
+                                                            <th width="50%">Mark (0-100)</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -449,11 +479,11 @@ if (isset($_GET['assignment'])) {
                                                                         name="marks[<?= $id ?>]" 
                                                                         class="form-control mark-input" 
                                                                         min="0" 
-                                                                        max="100"
+                                                                        max="<?= $row['max_mark'] ?>"
                                                                         step="0.01"
                                                                         value="<?= $student['mark'] !== null ? $student['mark'] : '' ?>"
                                                                         placeholder="Enter mark">
-                                                                    <!-- <span class="input-group-text">%</span> -->
+                                                                    <span class="input-group-text">%</span>
                                                                 </div>
                                                             </td>
                                                         </tr>
@@ -467,6 +497,10 @@ if (isset($_GET['assignment'])) {
                                                     <i class="bi bi-x-circle me-2"></i> Clear All
                                                 </button>
                                                 <button type="submit" class="btn btn-primary">
+                                                    <i class="bi bi-save me-2"></i> Save Marks
+                                                </button>
+                                                                                                </button>
+                                                <button style="position: absolute; top: 120px; left: -150px;" type="submit" class="btn btn-primary">
                                                     <i class="bi bi-save me-2"></i> Save Marks
                                                 </button>
                                             </div>
@@ -571,7 +605,7 @@ if (isset($_GET['assignment'])) {
             }
         });
         
-        // Form submission confirmation
+        /* Form submission confirmation
         document.getElementById('marksForm')?.addEventListener('submit', function(e) {
             const filledInputs = Array.from(document.querySelectorAll('.mark-input')).filter(input => input.value.trim() !== '').length;
             
@@ -584,7 +618,7 @@ if (isset($_GET['assignment'])) {
             if (!confirm(`You are about to save marks for ${filledInputs} student(s). Continue?`)) {
                 e.preventDefault();
             }
-        });
+        }); */
     </script>
 </body>
 </html>

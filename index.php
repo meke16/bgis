@@ -3,32 +3,32 @@ session_start();
 include('connect.php');
 require 'functions/functions.php';
 
+$error = "";
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = test_input($_POST["username"]);
     $password = test_input($_POST["password"]);
     
     // Prepare the query
-    $stmt = $conn->prepare("SELECT * FROM admin WHERE username=? LIMIT 1");
-    $stmt->bind_param("s", $username);
+    $stmt = $conn->prepare("SELECT * FROM admin  LIMIT 1");
     $stmt->execute();
     $result = $stmt->get_result();
     $user = $result->fetch_assoc();
     $stmt->close();
-    if ($user) {
         // Now, verify the password (since it's hashed in the database)
-        if (password_verify($password, $user["password"])) {
+        if (password_verify($password, $user["password"]) && $user['username'] == $username) {
             $_SESSION['loggedin'] = true;
             $_SESSION['username'] = $username;
             $_SESSION['is_admin'] = true;
+            $_SESSION['msg'] = "logged in successfully";
             echo "<script> window.location.href='home.php'; alert('logged in  successfully!'); </script>";
             exit();
-        } else {
-            echo "<script>alert('Wrong password');</script>";
+        } else if($user['username'] != $username) {
+            $error = "Invalid username";
+        } 
+        else {
+            $error = "Invalid Password";
         }
-    } else {
-        echo "<script>alert('yet unregister.');</script>";
-    }
-}
+    } 
 $admin_info = $conn->query("SELECT * FROM admin ")->fetch_assoc();
 if(isset($admin_info)) {
     $admin_username = $admin_info["username"];
@@ -157,6 +157,12 @@ if(isset($admin_info)) {
             border-color: var(--primary-color);
             box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
             background-color: white;
+            border: 3px solid rgb(189, 186, 8);
+
+        }
+        .form-control input {
+            border-color:rgb(221, 91, 16);
+            border: 3px solid rgb(189, 186, 8);
         }
         
         .input-icon {
@@ -232,6 +238,13 @@ if(isset($admin_info)) {
                 max-height: 90vhlo;
             }
         }
+                .x {
+                    position: absolute; 
+                    right:10px; 
+                    font-size: 25px;
+                    color: black;
+                    cursor: pointer;
+                }
     </style>
 </head>
 <body>
@@ -251,12 +264,12 @@ if(isset($admin_info)) {
             <h1>Admin Portal</h1>
             <p>Please enter your credentials to access the dashboard</p>
             
-            <?php if (isset($_GET['error'])): ?>
-                <div class="alert alert-danger">
-                    Invalid username or password. Please try again.
-                </div>
-            <?php endif; ?>
-            
+        <?php if (!empty($error)): ?>
+            <div id="alert" class="alert alert-danger mb-3">
+                <?php echo htmlspecialchars($error); ?>
+                <span class="x" onclick="document.getElementById('alert').style.display = 'none'">X</span>
+            </div>
+        <?php endif; ?>   
             <form action="<?php $_SERVER['PHP_SELF'] ?>" method="post">
             <div class="form-floating">
                     <div class="input-group mb-3">

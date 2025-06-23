@@ -1,4 +1,5 @@
 <?php
+session_start();
 include 'session.php';
 // Include database configuration
 require_once '../connect.php';
@@ -174,7 +175,7 @@ $stmt->close();
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="setupMarkType.php">
+                    <a class="nav-link" href="mark_type.php">
                         <i class="fas fa-clipboard-check"></i> Setup Mark Type
                     </a>
                 </li>             
@@ -276,6 +277,18 @@ $stmt->close();
                                     <a href="profile.php" class="quick-action-btn">
                                         <i class="fas fa-id-card text-warning"></i>
                                         <span>Manage Your Profile</span>
+                                    </a>
+                                </div>
+                                <div class="col-6">
+                                    <a href="mark_type.php" class="quick-action-btn">
+                                        <i class="fas fa-plus text-info"></i>
+                                        <span>Setup Mark Type</span>
+                                    </a>
+                                </div>
+                                <div class="col-6">
+                                    <a href="logout.php" class="quick-action-btn">
+                                        <i class="fas fa-sign-out-alt"></i>
+                                        <span>Logout</span>
                                     </a>
                                 </div>
                             </div>

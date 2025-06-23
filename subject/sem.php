@@ -49,6 +49,7 @@ if (isset($_GET['delete'])) {
         exit();
     } else {
     $stmt = $pdo->prepare("DELETE FROM semesters WHERE id = ?");
+    $stmt->execute([$id]);
     header("Location: sem.php?msg=deleted");
     exit;
     }
@@ -86,7 +87,7 @@ $semesterss = $pdo->query("SELECT * FROM semesters ORDER BY id ASC")->fetchAll(P
     <div class="card mb-4">
         <div class="card-header"><?= isset($semesters) ? 'Edit' : 'Add' ?> semesters</div>
         <div class="card-body">
-            <form method="POST">
+            <form method="POST" autocomplete="off">
                 <input type="hidden" name="action" value="<?= isset($semesters) ? 'edit' : 'add' ?>">
                 <?php if (isset($semesters)): ?>
                     <input type="hidden" name="id" value="<?= $semesters['id'] ?>">

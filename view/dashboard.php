@@ -1,7 +1,8 @@
 <?php
 session_start();
+include 'session.php';
+
 include 'config.php';
-// $_SESSION['student_id']=$_POST['viewid'];
 // Redirect to login if not authenticated
 if (!isset($_SESSION['student_id'])) {
     header('Location: index.php');
@@ -108,7 +109,7 @@ try {
     if (isset($_POST['upload_photo']) && isset($_FILES['photo']) && $_FILES['photo']['error'] === UPLOAD_ERR_OK) {
         $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
         $maxFileSize = 10 * 1024 * 1024; // 10MB
-        $uploadDir = '../uploads'; // Ensure this directory exists and is writable
+        $uploadDir = '../uploads/'; // Ensure this directory exists and is writable
 
         if (in_array($_FILES['photo']['type'], $allowedTypes) && $_FILES['photo']['size'] <= $maxFileSize) {
             $fileExt = pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION);
@@ -180,11 +181,11 @@ $activeTab = isset($_GET['tab']) ? $_GET['tab'] : 'summary';
                         <i class="bi bi-speedometer2"></i> Dashboard
                     </a>
                 </li>
-                <li class="nav-item">
+                <!-- <li class="nav-item">
                     <a class="nav-link <?php echo $activeTab === 'subjects' ? 'active' : ''; ?>" href="?tab=subjects">
                         <i class="bi bi-book"></i> Subjects
                     </a>
-                </li>
+                </li> -->
                 <li class="nav-item">
                     <a class="nav-link <?php echo $activeTab === 'marks' ? 'active' : ''; ?>" href="?tab=marks">
                         <i class="bi bi-list-check"></i> Detailed Marks
@@ -279,7 +280,8 @@ $activeTab = isset($_GET['tab']) ? $_GET['tab'] : 'summary';
                     </div>
                     <div class="card-body">
                         <?php if (count($semesterAverages) > 0): ?>
-                            <div class="row">
+                            <div class="row"> 
+                                <?php ksort($semesterAverages); ?>
                                 <?php foreach ($semesterAverages as $semesterId => $semester): ?>
                                     <div class="col-md-6 mb-4">
                                         <div class="card h-100">
@@ -311,7 +313,7 @@ $activeTab = isset($_GET['tab']) ? $_GET['tab'] : 'summary';
 
             <?php elseif ($activeTab === 'subjects'): ?>
                 <!-- Subjects View -->
-                <div class="card">
+                <!-- <div class="card">
                     <div class="card-header">
                         <h5>Subject Performance</h5>
                     </div>
@@ -335,7 +337,7 @@ $activeTab = isset($_GET['tab']) ? $_GET['tab'] : 'summary';
                             <p>No subject data available.</p>
                         <?php endif; ?>
                     </div>
-                </div>
+                </div> -->
 
             <?php elseif ($activeTab === 'marks'): ?>
                 <!-- Detailed Marks View -->
@@ -357,6 +359,7 @@ $activeTab = isset($_GET['tab']) ? $_GET['tab'] : 'summary';
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        <?php sort($marks); ?>
                                         <?php foreach ($marks as $mark): ?>
                                             <tr>
                                                 <!-- <td><?php echo htmlspecialchars(date('Y', strtotime($mark['semester_start_date']))); ?></td> -->

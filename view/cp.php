@@ -1,5 +1,6 @@
 <?php
 session_start();
+include 'session.php';
 require '../connect.php';
 
 // Redirect if not logged in

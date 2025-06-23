@@ -93,13 +93,22 @@ $result = $stmt->get_result();
 
         <div class="container-fluid">
             <div class="search-box no-print mb-4">
-                <form method="POST" class="input-group">
-                    <input type="search" class="form-control" placeholder="Search teachers..."
-                        name="search_query" value="<?php echo htmlspecialchars($searchQuery); ?>" autocomplete="off">
-                    <button type="submit" class="btn btn-primary" name="search">
-                        <i class="bi bi-search"></i> Search
-                    </button>
-                </form>
+            <form method="POST" class="row g-3">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <input type="search" class="form-control" placeholder="Search students..."
+                            name="search_query" value="<?php echo htmlspecialchars($searchQuery); ?>">
+                        <button type="submit" class="btn btn-info" name="search">
+                            <i class="bi bi-search"></i> Search
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <a href="./teachers_view.php" class="btn btn-info w-100">
+                        <i class="bi bi-table"></i> To Register New student
+                    </a>
+                </div>
+            </form>
             </div>
 
             <div class="table-responsive">
@@ -181,7 +190,7 @@ $result = $stmt->get_result();
                                         </div>
                                     </td>
                                     <td class="no-print text-center actions-column">
-                                        <button class="btn btn-sm btn-info" onclick="viewProfile(<?= $id; ?>)">
+                                        <button class="btn btn-sm btn-dark" onclick="viewProfile(<?= $id; ?>)">
                                             <i class="bi bi-info-circle"></i> Display
                                         </button>
                                     </td>

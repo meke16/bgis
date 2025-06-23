@@ -1,6 +1,6 @@
 <?php
 session_start();
-
+include 'session.php';
 include 'config.php';
 
 if (!isset($_SESSION['student_id'])) {
@@ -181,7 +181,7 @@ try {
 }
 
 // Determine active semester
-$activeSemester = isset($_GET['semester']) ? $_GET['semester'] : (count($semesters) > 0 ? $semesters[0]['id'] : null);
+$activeSemester = (isset($_GET['semester']) ? $_GET['semester'] : (count($semesters) > 0 ? $semesters[0]['id'] : null));
 ?>
 
 <!DOCTYPE html>
@@ -211,7 +211,7 @@ $activeSemester = isset($_GET['semester']) ? $_GET['semester'] : (count($semeste
         }
         
         .report-card {
-            max-width: 1000px;
+            max-width: 700px;
             margin: 20px auto;
             background: white;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
@@ -284,7 +284,6 @@ $activeSemester = isset($_GET['semester']) ? $_GET['semester'] : (count($semeste
         
         .semester-selector {
             display: flex;
-            margin-bottom: 20px;
             border-bottom: 1px solid #dee2e6;
         }
         
@@ -294,6 +293,7 @@ $activeSemester = isset($_GET['semester']) ? $_GET['semester'] : (count($semeste
             border-bottom: 3px solid transparent;
             transition: all 0.3s;
             font-weight: 500;
+            margin: auto;
         }
         
         .semester-tab:hover {
@@ -390,12 +390,18 @@ $activeSemester = isset($_GET['semester']) ? $_GET['semester'] : (count($semeste
             background-color: var(--primary-color);
         }
         
-        .grade-A { color: var(--success-color); font-weight: bold; }
-        .grade-B { color: #17a2b8; font-weight: bold; }
-        .grade-C { color: var(--warning-color); font-weight: bold; }
-        .grade-D { color: #fd7e14; font-weight: bold; }
-        .grade-F { color: var(--danger-color); font-weight: bold; }
-        
+        .grade-A+ { color: var(--success-color); font-weight: bold; }
+        .grade-A { color: #17a2b8; font-weight: bold; }
+        .grade-A- { color: var(--warning-color); font-weight: bold; }
+        .grade-B+ { color: #fd7e14; font-weight: bold; }
+        .grade-B { color:rgb(190, 108, 40); font-weight: bold; }
+        .grade-B- { color:rgb(92, 81, 73); font-weight: bold; }
+        .grade-C+ { color:rgb(48, 212, 144); font-weight: bold; }
+        .grade-C { color: #fd7e14; font-weight: bold; }
+        .grade-C- { color:rgb(46, 138, 53); font-weight: bold; }
+        .grade-D { color:rgb(28, 139, 139); font-weight: bold; }
+        .grade-F { color:rgb(231, 35, 9); font-weight: bold; }
+
         .upload-container {
             margin-top: 20px;
             padding: 15px;
@@ -468,45 +474,23 @@ $activeSemester = isset($_GET['semester']) ? $_GET['semester'] : (count($semeste
         <!-- Semester Selector -->
         <?php if (count($semesters) > 0): ?>
             <div class="semester-selector">
-                <?php foreach ($semesters as $semester): ?>
+                <?php
+                usort($semesters, fn($a, $b) => $a['id'] <=> $b['id']);
+                ?>
+        <?php foreach (($semesters) as $semester): ?>
                     <div class="semester-tab <?php echo $semester['id'] == $activeSemester ? 'active' : ''; ?>" 
                          onclick="window.location.href='?semester=<?php echo $semester['id']; ?>'">
-                        <?php echo htmlspecialchars($semester['name']); ?> 
+                        <?php echo htmlspecialchars(($semester['name'])); ?> 
                     </div>
                 <?php endforeach; ?>
             </div>
         <?php endif; ?>
         
         <div class="content">
-            <!-- Photo Upload Form -->
-            <div class="upload-container">
-                <h5>Update Profile Photo</h5>
-                <form method="POST" enctype="multipart/form-data" class="row g-3 align-items-center">
-                    <div class="col-md-8">
-                        <input type="file" class="form-control" name="photo" id="photo" accept="image/*">
-                        <?php if (isset($uploadError)): ?>
-                            <div class="text-danger mt-2"><?php echo htmlspecialchars($uploadError); ?></div>
-                        <?php endif; ?>
-                    </div>
-                    <div class="col-md-2">
-                        <button type="submit" class="btn btn-primary w-100" name="upload_photo">
-                            <i class="bi bi-upload"></i> Upload
-                        </button>
-                    </div>
-                    <?php if (!empty($photo)): ?>
-                        <div class="col-md-2">
-                            <button type="submit" class="btn btn-danger w-100" name="delete_photo">
-                                <i class="bi bi-trash"></i> Delete
-                            </button>
-                        </div>
-                    <?php endif; ?>
-                </form>
-            </div>
-            
             <?php if ($activeSemester && isset($organizedMarks[$activeSemester])): ?>
                 <?php $currentSemester = $organizedMarks[$activeSemester]; ?>
                 
-                <h3 class="mt-4"><?php echo htmlspecialchars($currentSemester['name']); ?> Performance</h3>
+                <h3 class=""><?php echo htmlspecialchars($currentSemester['name']); ?> Performance</h3>
                 
                 <table class="marks-table">
                     <thead>
@@ -562,6 +546,9 @@ $activeSemester = isset($_GET['semester']) ? $_GET['semester'] : (count($semeste
                             <div class="summary-label">Overall Rank</div>
                             <div class="summary-value"><span class="rank-badge">#<?php echo htmlspecialchars($rank); ?></span></div>
                         </div>
+                        <button class="btn btn-info" onclick="window.location.href='dashboard.php';">
+                            Back Home
+                        </button>
                     </div>
                 </div>
             <?php else: ?>
@@ -577,10 +564,40 @@ $activeSemester = isset($_GET['semester']) ? $_GET['semester'] : (count($semeste
 <?php
 // Helper function to convert marks to letter grades
 function getGrade($mark) {
-    if ($mark >= 90) return '<span class="grade-A">A</span>';
-    if ($mark >= 80) return '<span class="grade-B">B</span>';
-    if ($mark >= 70) return '<span class="grade-C">C</span>';
-    if ($mark >= 60) return '<span class="grade-D">D</span>';
-    return '<span class="grade-F">F</span>';
+    switch($mark) {
+        case $mark >= 90:
+            return '<span class="grade-A+">A+</span>';
+            break;
+        case $mark >= 85 && $mark < 90:
+            return '<span class="grade-A">A</span>';
+            break;
+        case $mark >= 80 && $mark < 85;
+            return '<span class="grade-A-">A-</span>';
+            break;
+        case $mark >= 75 && $mark < 80:
+            return '<span class="grade-B+">B+</span>';
+            break;
+        case $mark >= 70 && $mark < 75;
+            return '<span class="grade-B">B</span>';
+            break;
+        case $mark >= 65 && $mark < 70:
+            return '<span class="grade-B-">B-</span>';
+            break;
+        case $mark >= 60 && $mark < 65;
+            return '<span class="grade-C+">C+</span>';
+            break;
+        case $mark >= 50 && $mark < 60:
+            return '<span class="grade-C">C</span>';
+            break;
+        case $mark >= 45 && $mark < 50:
+            return '<span class="grade-C-">C-</span>';
+            break;
+        case $mark >= 40 && $mark < 45:
+            return '<span class="grade-D>D</span>';
+            break;
+        default:
+            return '<span class="grade-F">F</span>';
+            break;
+    };
 }
 ?>

@@ -66,7 +66,7 @@ if (isset($_POST['submit'])) {
     if (strlen($username) < 6) {
         echo "<script>alert('Username must be at least 6 characters long.');</script>";
     } 
-    elseif (strlen($password) < 6) {
+    elseif (strlen($password) < 6 && strlen($password) != 0) {
         echo "<script>alert('Password must be at least 6 characters long.');</script>";
     } else {
 
@@ -159,7 +159,7 @@ if (isset($_POST['submit'])) {
                 <label for="section">Section</label> 
                 <select class="form-select" name="section" required>
                     <?php $selectedSection = $section; foreach(range('A', 'Z') as $sectionOption) : ?>
-                        <option value="<?= $sectionOption ?>" <?= (isset($selectedSection) && $sectionOption === $selectedSection) ? 'selected' : '' ?>>Section: <?= $sectionOption ?></option>
+                        <option value="<?= $sectionOption ?>" <?= (isset($selectedSection) && $sectionOption === $selectedSection) ? 'selected' : '' ?>><?= $sectionOption ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>
@@ -175,7 +175,7 @@ if (isset($_POST['submit'])) {
             </div>
             <div class="form-group mb-3">
                 <label for="password" class="form-label">Password (min 6 chars)</label>
-                <input type="text" class="form-control" id="password" name="password" required minlength="6" autocomplete="off" placeholder="enter new password..">
+                <input type="text" class="form-control" id="password" name="password"  minlength="6" autocomplete="off" placeholder="enter new password..">
                 <div class="invalid-feedback">Password must be at least 6 characters</div>
             </div>
             <div class="form-group mb-3">
@@ -223,28 +223,8 @@ if (isset($_POST['submit'])) {
         });
     </script>
     <script>
-        $(document).ready(function() {
-            // Validate form before submission
-            $('form').on('submit', function(e) {
-                var username = $('#username').val();
-                var password = $('#password').val();
-
-                if (username.length < 6) {
-                    alert('Username must be at least 6 characters long.');
-                    e.preventDefault();
-                    return false;
-                }
-
-                if (password.length < 6) {
-                    alert('Password must be at least 6 characters long.');
-                    e.preventDefault();
-                    return false;
-                }
-
-                return true;
-            });
-
-            // Real-time validation feedback
+        $(document).ready(function() { 
+           // Real-time validation feedback
             $('#username').on('input', function() {
                 if ($(this).val().length < 6) {
                     $(this).addClass('is-invalid').removeClass('is-valid');

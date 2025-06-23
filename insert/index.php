@@ -120,7 +120,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         
         .login-header img {
-            height: 80px;
+            height: 100px;
             margin-bottom: 1rem;
         }
         
@@ -162,17 +162,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             font-size: 0.85rem;
             color: #777;
         }
+               .x {
+                    position: absolute; 
+                    right:10px; 
+                    font-size: 25px;
+                    color: black;
+                    cursor: pointer;
+                }
     </style>
 </head>
 <body>
     <div class="login-container">
         <div class="login-header">
-            <img src="../logo/bgis.png" alt="School Logo" class="img-fluid">
+            <img src="../logo/bg.jpg" alt="School Logo" class="img-fluid">
             <h2>Teacher Login</h2>
         </div>
         
         <?php if (!empty($error)): ?>
-            <div class="alert alert-danger mb-3"><?php echo htmlspecialchars($error); ?></div>
+            <div id="alert" class="alert alert-danger mb-3"><?php echo htmlspecialchars($error); ?>
+            <span class="x" onclick="document.getElementById('alert').style.display = 'none'">X</span>
+        </div>
         <?php endif; ?>
         
         <form method="POST" action="">
@@ -199,10 +208,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <i class="fas fa-sign-in-alt me-2"></i> Login
             </button>
             
-            <div class="footer-text mt-3">
+            <!-- <div class="footer-text mt-3">
                 <p>Forgot password? <a href="forgot_password.php">Reset here</a></p>
                 <p>Don't have an account? Contact administration</p>
-            </div>
+            </div> -->
         </form>
     </div>
 

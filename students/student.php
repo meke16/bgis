@@ -89,7 +89,7 @@ $num = 0;
                 <div class="col-md-4">
                     <div class="input-group">
                         <input type="search" class="form-control" placeholder="Search students..."
-                            name="search_query" value="<?php echo htmlspecialchars($searchQuery); ?>" required>
+                            name="search_query" value="<?php echo htmlspecialchars($searchQuery); ?>">
                         <button type="submit" class="btn btn-info" name="search">
                             <i class="bi bi-search"></i> Search
                         </button>
@@ -161,15 +161,6 @@ $num = 0;
                                         <button class="btn btn-sm btn-danger" onclick="showOverlay(<?= $id ?>)">
                                             <i class="bi bi-trash"></i>
                                         </button>
-                                        <!-- <button class="btn btn-sm btn-info view-student-btn" data-student-id="<?= $id ?>">
-                                            <i class="bi bi-info-circle"></i> Info
-                                        </button> -->
-                                        <form action="../view/dashboard.php" method="POST" style="display:inline;">
-                                            <input type="hidden" name="viewid" value="<?= $id ?>">
-                                            <button type="submit" class="btn btn-sm btn-info">
-                                                <i class="bi bi-info-circle"></i>
-                                            </button>
-                                        </form>
                                     </div>
                                 </td>
                             </tr>
@@ -196,26 +187,6 @@ $num = 0;
                 <button class="btn btn-secondary px-4" onclick="closeOverlay()">
                     <i class="bi bi-x"></i> Cancel
                 </button>
-            </div>
-        </div>
-    </div>
-    <!-- Student Info Modal -->
-    <div class="modal fade" id="studentInfoModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Student Information</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body" id="studentInfoContent">
-                    Loading student information...
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" onclick="printModalContent()">
-                        <i class="bi bi-printer"></i> Print
-                    </button>
-                </div>
             </div>
         </div>
     </div>

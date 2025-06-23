@@ -9,7 +9,7 @@ if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity']) >
     session_unset();
     session_destroy();
     // Redirect to the login page (index.php) with a session expired message
-    header("Location: index.php?session_expired=true");
+    header("Location: index.php?msg=session_expired");
     exit();
 }
 
